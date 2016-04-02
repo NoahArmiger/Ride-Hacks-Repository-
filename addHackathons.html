@@ -182,7 +182,7 @@
           infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
           infowindow.open(map, marker);
         });
-	Button.onclick = addDriveLocation; 
+	Button.onclick = addDriveLocation(address, name, day, month, year,lat,lng);
         function addDriveLocation(address, name, day, month, year,lat,lng)
         {
             
