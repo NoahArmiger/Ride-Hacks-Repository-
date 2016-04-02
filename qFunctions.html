@@ -33,9 +33,57 @@
             
             var markerArray = new Array();
             var contentArray = new Array();
+            var email;
+            var userAddress;
             
             function displayMapOfEvent(eventName) {
+                //var uid = ref.getAuth().uid;
+                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
+
                 ref.once("value", function(snap) {
+                    var obj = snap.val();
+
+                    for(var i in obj["Users"]) {
+                        if(obj["Users"][i]["UserID"] == uid) {
+                            email = obj["Users"][i]["EmailAddress"];
+                            
+                            for(var j in obj["Users"][i]["Events"]) {
+                                if(obj["Users"][i]["Events"][j]["Event"] == eventName) {
+                                    var latLng = new google.maps.LatLng(obj["Users"][i]["Events"][j]["lat"], obj["Users"][i]["Events"][j]["lng"]);
+                                    
+                                    var userMarker = new google.maps.Marker({
+                                        map: map,
+                                        position: latLng,
+                                        title: eventName,
+                                        icon: {
+                                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                                            scale: 5,
+                                            fillColor: 'green',
+                                            fillOpacity: 1
+                                        }
+                                    });
+                                    
+                                    userAddress = userMarker;
+                                    
+                                    var userContentString = '<div class = "w3-container w3-padding w3-center">' +
+                                        '<p>' + 'You' + '</p>' +
+                                        '<p>' + obj["Users"][i]["Events"][j]["Address"] +'</p>' +
+                                        '</div>';
+
+                                    var info = new google.maps.InfoWindow();
+
+                                    userMarker.addListener('mouseover', function() {
+                                        info.setContent(userContentString);
+                                        info.open(map, this);
+                                    });
+                                    userMarker.addListener('mouseout', function() {
+                                        info.close(map, this);
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    
                     var info1 = new google.maps.InfoWindow();
                     
                     var obj = snap.val();
@@ -78,7 +126,7 @@
                             var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
-                                if(address != null) {
+                                if(address != null && obj["Events"][i][j]["Email"] != email) {
                                     var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
                                     var marker1 = new google.maps.Marker({
@@ -114,50 +162,9 @@
                             }
                         }
                     }
+                    console.log(email);
                 });
-                var uid = ref.getAuth().uid;
-
-                ref.once("value", function(snap) {
-                    var obj = snap.val();
-
-                    for(var i in obj["Users"]) {
-                        if(obj["Users"][i]["UserID"] == uid) {
-                            for(var j in obj["Users"][i]["Events"]) {
-                                if(obj["Users"][i]["Events"][j]["Event"] == eventName) {
-                                    var latLng = new google.maps.LatLng(obj["Users"][i]["Events"][j]["lat"], obj["Users"][i]["Events"][j]["lng"]);
-                                    
-                                    var marker = new google.maps.Marker({
-                                        map: map,
-                                        position: latLng,
-                                        title: eventName,
-                                        icon: {
-                                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                            scale: 5,
-                                            fillColor: 'green',
-                                            fillOpacity: 1
-                                        }
-                                    });
-                                    
-                                    var contentString = '<div class = "w3-container w3-padding w3-center">' +
-                                        '<p>' + 'You' + '</p>' +
-                                        '<p>' + obj["Users"][i]["Events"][j]["Address"] +'</p>' +
-                                        '</div>';
-
-                                    var info = new google.maps.InfoWindow({
-                                        content: contentString
-                                    });
-
-                                    marker.addListener('mouseover', function() {
-                                        info.open(map, this);
-                                    });
-                                    marker.addListener('mouseout', function() {
-                                        info.close(map, this);
-                                    });
-                                }
-                            }
-                        }
-                    }
-                });
+                
             }
             
             //return a latLng for address
