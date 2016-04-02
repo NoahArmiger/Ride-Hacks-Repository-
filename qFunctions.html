@@ -97,7 +97,7 @@
                                     
                                     marker1.addListener('mouseover', function() {
                                         var notFound = true;
-                                        for(var k; k<1000 && notFound; k++) {
+                                        for(var k++; k<1000 && notFound; k++) {
                                             if(markerArray[k] == this) {
                                                 info1.setContent(contentArray[k]);
                                                 notFound = false;
