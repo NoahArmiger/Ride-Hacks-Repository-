@@ -387,6 +387,7 @@ function initMap() {
          showHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
                 var markerArray = new Array();
+                var contentArray = new Array();
             
             function displayMapOfEvent(eventName) {
                 ref.once("value", function(snap) {
@@ -440,7 +441,7 @@ function initMap() {
                                     markerArray[x] = marker1;
                                     x++;
                                      
-                                    var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
+                                    contentArray[x] = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
                                         '<p>' + obj["Events"][i][j]["Email"] + '</p>' +
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
@@ -449,7 +450,11 @@ function initMap() {
                                     
                                     
                                     marker1.addListener('mouseover', function() {
-                                        info1.setContent(contentString1);
+                                        for(var i in markerArray) {
+                                            if(i == this) {
+                                                info1.setContent(contentArray[i]);
+                                            }
+                                        }
                                         info1.open(map,this);
                                     });
                                     marker1.addListener('mouseout', function() {
