@@ -386,7 +386,7 @@ function initMap() {
           
          showHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
-              function displayMapOfEvent(eventName) {
+               function displayMapOfEvent(eventName) {
                 ref.once("value", function(snap) {
                     var obj = snap.val();
                     
@@ -427,13 +427,13 @@ function initMap() {
                                 if(address != null) {
                                     latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
-                                    var marker = new google.maps.Marker({
+                                    var marker1 = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
                                     });
                                     
-                                    markerArray[x] = marker;
+                                    markerArray[x] = marker1;
                                      
                                     var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
@@ -441,15 +441,16 @@ function initMap() {
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
                                     
-                                    var info = new google.maps.InfoWindow({
-                                        content: contentString1
+                                    var info1 = new google.maps.InfoWindow({
+                                        content: "test"
                                     });
                                     
-                                    marker.addListener('mouseover', function() {
-                                        info.open(map,this);
+                                    marker1.addListener('mouseover', function() {
+                                        info1.setContent(contentString1);
+                                        info1.open(map,this);
                                     });
-                                    marker.addListener('mouseout', function() {
-                                        info.close(map,this);
+                                    marker1.addListener('mouseout', function() {
+                                        info1.close(map,this);
                                     });
                                     
                                     x++;
