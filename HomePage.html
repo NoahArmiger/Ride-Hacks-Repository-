@@ -12,10 +12,10 @@
         padding: 0;
       }
       #map {
-        height: 50%;
-          left:25%;
-          width:50%;
-          top:25%;
+        height: 80%;
+          left: 0%;
+          width:100%;
+          top:0%;
       }
       .controls {
         margin-top: 10px;
@@ -111,52 +111,35 @@
 </div>
     <br> 
     <div class= "w3-center"> 
-    <!--<button class =  "w3-btn w3-blue w3-hover-yellow w3-round ">New Event</button>-->
         <br>
         <br>
         <div class = "w3-container w3-blue ">
         <h3>or, add an event below</h3>
     </div>
-    <br>
-        <br>
+
         
     </div>
     <div class="container">
-        <table id = "tableEvents" class="table table-hover">
-    <thead>
-      <tr>
-          <th>Event</th>
-        <th>Location</th>
-          <th>Dates</th>
-      </tr> 
-    </thead>
-    <tbody>
-      <tr>
-        <td>TribeHacks</td>
-        <td>WM</td>
-        <td>4/1/2016</td>
-        </tr>
-            </tbody>
-    </table> 
-        <br>    
-        <br>    
+    
     </div>
-    <div class = "w3-center">
-           <!--<h1 align = "center">Put Something With a map here? </h1>-->
-    <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
+            <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
     <br>
-    <div style = "visibility:hidden" id="map"></div>
+    <div  id="map"></div>
+    <div class = "w3-center">
+         
+   
    <br>
         <button class= "w3-btn w3-blue w3-rounder w3-hover-white w3-center" >Submit </button>
     </div>
     <br>
     <br>
-
-        <h1 align ="center">The map goes here</h1>
+ 
+      
 <br>
     <br>
     <br>
     <br>
+    
         <div class="w3-container w3-center ">
   <h3>Are you driving,or looking for a ride?</h3>
             
@@ -173,24 +156,32 @@
 </div> 
 
     
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+     <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPuhAA-CpEQ6g9BuOJxg1tfe5PF9BjmXc&libraries=places&callback=initMap"
+        async defer></script>
     <script>
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
       var ref;
+        var map;
       function initMap() {
           ref = new Firebase("https://hackathondrive.firebaseio.com/")
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
-          zoom: 13,
+       // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+         map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 39.887, lng: -96.437},
+          zoom: 4,
             streetViewControl: false
         });
-          
         var input = /** @type {!HTMLInputElement} */(
             document.getElementById('pac-input'));
 
         var types = document.getElementById('type-selector');
-        //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
 
         var autocomplete = new google.maps.places.Autocomplete(input);
@@ -227,10 +218,7 @@
           }));
           marker.setPosition(place.geometry.location);
           marker.setVisible(true);
-          var pos = place.geometry.location;
-          console.log(pos);
-            addDriveLocation("EventName", document.getElementById("pac-input").value, '"Name"', "jberns1@umbc.edu", "Driving to");
-
+addDriveLocation("EventName", document.getElementById("pac-input").value, "Name", "EmailAddress", "Driving to", "now");
           var address = '';
           if (place.address_components) {
             address = [
@@ -244,8 +232,34 @@
           infowindow.open(map, marker);
         });
 
-        function addDriveLocation(event, address, name, email, desc)
+  
+      
+
+      }
+          
+        function addMarker(address) {
+            var geocoder = new google.maps.Geocoder();
+           
+
+            geocoder.geocode( { 'address': address}, function(results, status) {
+
+        if (status == google.maps.GeocoderStatus.OK) {
+            var latitude = results[0].geometry.location.lat();
+        var longitude = results[0].geometry.location.lng();
+        console.log(latitude);
+    
+                var marker = new google.maps.Marker({
+            position: {lat: latitude, lng: longitude},
+            map: map
+            });
+                } 
+            }); 
+            
+        }
+                                            
+        function addDriveLocation(event, address, name, email, desc, date)
         {
+            
             console.log('entered');
              ref.once("value", function(snapshot) {
                 // alert('2');
@@ -273,17 +287,53 @@
             }
             //add driver/l4 event to individual list
             for(var i in obj["Users"]) {
-                if(obj["Users"][i]["Email"] == email) {
-                    ref.child("Users").child(i).push({Address: address, Driving: desc, Email: email, Name: name});
+                if(obj["Users"][i]["EmailAddress"] == email) {
+                    ref.child("Users").child(i).child("Events").push({Address: address, Driving: desc, Event: event});
                 }
             }
          },function (errorObject) {console.log("The read failed: " + errorObject.code);});  
         }
           
-      }
+      
+        
+      //function generateTable(email) {
+        var email = "EmailAddress"
+          var table = document.getElementById("tableEvents");
+        ref = new Firebase("https://hackathondrive.firebaseio.com/")
+          var tablestr = "<thead><tr><th>Event</th>        <th>Location</th><th>Dates</th></tr></thead><tbody>";
+              ref.once("value", function(snapshot) {
+                
+            console.log(snapshot.val());
+               
+            var obj = snapshot.val();
+                 console.log('4');
+            //add driver/l4 to individual event
+            
+            for(var i in obj["Users"]) {
+                if(obj["Users"][i]["EmailAddress"] == email) {
+                    for(var j in obj["Users"][i]["Events"])
+                        {
+                            var address = obj["Users"][i]["Events"][j]["Address"];
+                            var Event = obj["Users"][i]["Events"][j]["Event"];
+                            var year = obj["Users"][i]["Events"][j]["year"];
+                            tablestr += "<tr><td>" + Event + " - " + year  +"</td><td>" + address + "</td>       <td></tr>"                                                     
+                        }
+                }
+            }
+                  tablestr += "</tbody>"
+                  table.innerHTML = tablestr;
+         },function (errorObject) {console.log("The read failed: " + errorObject.code);}); 
+        
+         ref.once("value", function(snapshot) {
+             var obj = snapshot.val();
+         for(var i in obj["Events"]) {
+            addMarker(obj["Events"][i]["Address"]);
+         }
+         
+         
+         }, function (er) {});
+      //}
+        //$(document).ready(function() {generateTable("EmailAddress"); });
     </script>
-      <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPuhAA-CpEQ6g9BuOJxg1tfe5PF9BjmXc&libraries=places&callback=initMap"
-        async defer></script>
 </body> 
 </html> 
