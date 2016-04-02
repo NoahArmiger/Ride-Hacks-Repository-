@@ -81,12 +81,26 @@
                     
                     for(var i in obj["Events"]) {
                         if(obj["Events"][i]["EventName"] == eventName) {
+                            if(obj["Events"][i]["Address"] != null) {
+                                var latLng = new google.maps.LatLng(obj["Events"][i]["lat"], obj["Events"][i]["lng"]);
+                                    
+                                var marker = new google.maps.Marker({
+                                    map: map,
+                                    position: latLng,
+                                    title: eventName
+                                });
+                            }
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    codeAddress(address);
-                                    //console.log(address);
-                                    //console.log("was added");
+                                    
+                                    var latLng = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
+                                    
+                                    var marker = new google.maps.Marker({
+                                        map: map,
+                                        position: latLng,
+                                        title: obj["Events"][i][j]["Name"]
+                                    });
                                 }
                                 else {
                                     alert(address);
@@ -97,15 +111,12 @@
                 });
             }
             
+            //return a latLng for address
             function codeAddress(address) {
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
-                        map.setCenter(results[0].geometry.location);
-                        var marker = new google.maps.Marker({
-                            map: map,
-                            position: results[0].geometry.location
-                        });
+                        return results[0].geometry.location;
                         console.log(address);
                     } else {
                         alert("Geocode was not successful for the following reason: " + status);
