@@ -447,13 +447,13 @@ function initMap() {
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
                                     
-                                    marker1.addListener('mouseover', function() {
-                                        var x;
-                                        for(var i in markerArray) {
-                                            if(i == this) {
+                                   marker1.addListener('mouseover', function() {
+                                        var notFound = true;
+                                        for(var x; x<1000 && notFound; x++) {
+                                            if(markerArray[x] == this) {
                                                 info1.setContent(contentArray[x]);
+                                                notFound = false;
                                             }
-                                            x++;
                                         }
                                         info1.open(map,this);
                                     });
