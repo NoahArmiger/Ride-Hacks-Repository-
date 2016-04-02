@@ -109,6 +109,9 @@
     </tbody>
   </table>
 </div>
+      <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
+    <br>
+    <div  id="map"></div>
     <br> 
     <div class= "w3-center"> 
         <br>
@@ -122,9 +125,7 @@
     <div class="container">
     
     </div>
-            <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
-    <br>
-    <div  id="map"></div>
+          
     <div class = "w3-center">
          
    
@@ -165,13 +166,21 @@
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
       var ref;
+        var geocoder
         var map;
+        var hackathonLoc;
+        var curloc;
+        var mIndex = 0;
+        var muIndex = 0;
+        var markers = new Array();
+        var userMarkers = new Array();
       function initMap() {
+          console.log("Init");
           ref = new Firebase("https://hackathondrive.firebaseio.com/")
        // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
+          geocoder = new google.maps.Geocoder();
          map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 39.887, lng: -96.437},
           zoom: 4,
@@ -230,60 +239,69 @@ addDriveLocation("EventName", document.getElementById("pac-input").value, "Name"
 
           infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
           infowindow.open(map, marker);
-        });
+            ref.once("value", function(snapshot) {
+               
+            var obj = snapshot.val();
+            for(var i in obj["Events"]) {
 
-  
-      
-
-      }
-          
-        function addMarker(address) {
-            var geocoder = new google.maps.Geocoder();
-           
-
-            geocoder.geocode( { 'address': address}, function(results, status) {
-
-        if (status == google.maps.GeocoderStatus.OK) {
-            var latitude = results[0].geometry.location.lat();
-        var longitude = results[0].geometry.location.lng();
-        console.log(latitude);
-    
-                var marker = new google.maps.Marker({
-            position: {lat: latitude, lng: longitude},
-            map: map
-            });
-                } 
-            }); 
+                    alert(obj["Events"][i]["Event"]);
+                    addHackathonMarker(obj["Events"][i]["Event"]);
+                    }
             
-        }
-                                            
+            }
+                                   
+                                   ,function (errorObject) {console.log("The read failed: " + errorObject.code);}); 
+                    });   
+        }    
+        function addHackathonMarker(address, lat, lng) {
+             console.log("IN"); 
+                var marker = new google.maps.Marker({position: {lat: lat, lng: lng}, map: map });
+                markers[mIndex] = marker;
+                mIndex++;
+                console.log(mIndex);
+                marker.addListener('click', function() { 
+                    //console.log("add");
+                // map.setZoom(8);
+                //map.setCenter(marker.getPosition());
+                hackathonLoc = marker;
+                for(var i = 0; i < mIndex;i++) 
+                    {
+                        console.log(marker);
+                        markers[i].setMap(null);
+                    }
+                    hackathonLoc.setMap(map);
+                    hackathonLoc.addListener('click', function(){});
+                 ref.once("value", function(snapshot) {
+                    var obj = snapshot.val();
+                    for(var i in obj["Users"]) {
+                    for(var j in obj["Users"][i]["Events"])
+                        {
+                        displayMap((obj["Users"][i]["Events"][j]["Event"]));
+                        }
+                    }
+                } 
+                                   
+                ,function (errorObject) {console.log("The read failed: " + errorObject.code);}); 
+                    });   
+        }                       
         function addDriveLocation(event, address, name, email, desc, date)
         {
             
             console.log('entered');
              ref.once("value", function(snapshot) {
                 // alert('2');
-            console.log(snapshot.val());
+                console.log(snapshot.val());
                 // alert('3');
-            var obj = snapshot.val();
+                 var obj = snapshot.val();
                  console.log('4');
             //add driver/l4 to individual event
-            for(var i in obj["Events"]) {      
-                console.log(obj["Events"][i]["EventName"] + " - " + event + " - " + i);
+                for(var i in obj["Events"]) {      
+                    console.log(obj["Events"][i]["EventName"] + " - " + event + " - aaaaa" + i);
                 
-            if(obj["Events"][i]["EventName"] == event) {
-                console.log("IN");
-                ref.child("Events").child(i).push({Address: address, Driving: desc, Email: email, Name: name});
-            /*for(var j in obj["Events"][i][j])
-                {
-                    if(obj["Events"][i][j] = null) {
-                   console.log('6');
-                    //console.log(obj["hackathondrive"][i]["Event"]);
-                    
-               }
-                console.log('7');   
-                }*/
-            }
+                if(obj["Events"][i]["EventName"] == event) {
+                    console.log("IN");
+                    ref.child("Events").child(i).push({Address: address, Driving: desc, Email: email, Name: name});
+                }
             }
             //add driver/l4 event to individual list
             for(var i in obj["Users"]) {
@@ -297,7 +315,7 @@ addDriveLocation("EventName", document.getElementById("pac-input").value, "Name"
       
         
       //function generateTable(email) {
-        var email = "EmailAddress"
+        var email = "EmailAddress";
           var table = document.getElementById("tableEvents");
         ref = new Firebase("https://hackathondrive.firebaseio.com/")
           var tablestr = "<thead><tr><th>Event</th>        <th>Location</th><th>Dates</th></tr></thead><tbody>";
@@ -316,7 +334,9 @@ addDriveLocation("EventName", document.getElementById("pac-input").value, "Name"
                             var address = obj["Users"][i]["Events"][j]["Address"];
                             var Event = obj["Users"][i]["Events"][j]["Event"];
                             var year = obj["Users"][i]["Events"][j]["year"];
-                            tablestr += "<tr><td>" + Event + " - " + year  +"</td><td>" + address + "</td>       <td></tr>"                                                     
+                            var day = obj["Users"][i]["Events"][j]["day"];
+                            var month = obj["Users"][i]["Events"][j]["month"];
+                            tablestr += "<tr><td>" + Event + " - " + year  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
                         }
                 }
             }
@@ -327,11 +347,65 @@ addDriveLocation("EventName", document.getElementById("pac-input").value, "Name"
          ref.once("value", function(snapshot) {
              var obj = snapshot.val();
          for(var i in obj["Events"]) {
-            addMarker(obj["Events"][i]["Address"]);
+             console.log(obj["Events"][i]["Address"] + " - " + obj["Events"][i]["Lat"] + " - " + obj["Events"][i]["Lng"]);
+             if((obj["Events"][i]["Lat"]) != undefined && (obj["Events"][i]["Lng"]) != undefined) {
+            addHackathonMarker(obj["Events"][i]["Address"],obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
+             }
+             else{ console.log(obj["Events"][i]["Address"] + " doesnt have a lat"); }
          }
          
          
          }, function (er) {});
+         function displayMap(eventName) {
+                ref.once("value", function(snap) {
+                    var obj = snap.val();
+                    
+                    for(var i in obj["Events"]) {
+                        if(obj["Events"][i]["Event"] == eventName) {
+                            var latLng = new google.maps.LatLng(obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
+                                    
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                position: latLng,
+                                title: eventName,
+                                icon: {
+                                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                                    scale: 5
+                                }
+                            });
+                            for(var j in obj["Events"][i]) {
+                                var address = obj["Events"][i][j]["Address"];
+                                if(address != null) {
+                                    
+                                    var latLng = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
+                                    
+                                    var marker = new google.maps.Marker({
+                                        map: map,
+                                        position: latLng,
+                                        title: obj["Events"][i][j]["Name"]
+                                    });
+                                }
+                                else {
+                                    //alert(address);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            //return a latLng for address
+            function codeAddress(address) {
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode( { 'address': address}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        return results[0].geometry.location;
+                        console.log(address);
+                    } else {
+                        alert("Geocode was not successful for the following reason: " + status);
+                    }
+                });
+            }
       //}
         //$(document).ready(function() {generateTable("EmailAddress"); });
     </script>
