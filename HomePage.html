@@ -136,7 +136,7 @@
         <button class= "w3-btn w3-blue w3-rounder w3-round w3-hover-white w3-center" onClick = "verifyPin()">Add pin </button>
        
     </div>
-
+   <br><br>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
      <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPuhAA-CpEQ6g9BuOJxg1tfe5PF9BjmXc&libraries=places&callback=initMap"
@@ -145,128 +145,113 @@
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-      var ref;
-        var geocoder
-        var map;
-        var hackathonLoc;
-        var hackathonLocEvent;
-        var curloc;
-        var pos;
-        var mIndex = 0;
-        var muIndex = 0;
-        var markers = new Array();
-        var userMarkers = new Array();
-        var selectedBTN;
-        var markerToAdd;
-        var selectedHackathon = false;
-        function verifyPin() {
-            var erStr = "";
-            if(!(selectedBTN == "l4" || selectedBTN == "Driving")) {
-                erStr += "Select if you are driving or looking for a driver<br>";
-            }
-            if(document.getElementById("pac-input").value == "") {
-                erStr +="Please add your location<br>";
-            }
-            if(hackathonLoc == "" || hackathonLoc == undefined) {
-                erStr += "Please select the desired hackathon from the map";
-            }
-            if(erStr != "") {
-            document.getElementById("er").style.visibility = "visible";
-            document.getElementById("er").innerHTML = "<strong>Error!</strong><br>" + erStr;
-            }
-            if(erStr == "") {
-            
-                document.getElementById("er").style.visibility = "hidden";
-                console.log("DATA: " + ref.getAuth().uid);
-               // console.log(hackathonLocEvent + " - " + document.getElementById("pac-input"));
-                
-                var uid = ref.getAuth().uid;
-                //uid = "98d79b87-b43d-42a6-b208-a11091b94f22";
-            
-            ref.once("value", function(snap) {
-                var obj = snap.val();
-                console.log(obj);
-                for(var i in obj["Users"]) {
-                    console.log("A" + obj["Users"][i]);
-                    if(obj["Users"][i]["UserID"] == uid) {
-                    	console.log(obj["Users"][i]);
-                        console.log(obj["Users"][i]["Name"]);
-                        name = obj["Users"][i]["Name"];
-                        email = obj["Users"][i]["EmailAddress"];
-                        addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), "now", pos);
-                        break;
-                    }
+var ref;
+var geocoder;
+var map;
+var hackathonLoc;
+var uid;
+var hackathonLocEvent;
+var curloc;
+var hackDate;
+var pos;
+var mIndex = 0;
+var muIndex = 0;
+var markers = new Array();
+var userMarkers = new Array();
+var selectedBTN;
+var markerToAdd;
+var selectedHackathon = false;
+function verifyPin() {
+    var erStr = "";
+    if(!(selectedBTN == "l4" || selectedBTN == "Driving")) 
+    {
+        erStr += "Select if you are driving or looking for a driver<br>";
+    }
+    if(document.getElementById("pac-input").value == "") {
+        erStr +="Please add your location<br>";
+    }
+    if(hackathonLoc == "" || hackathonLoc == undefined) {
+        erStr += "Please select the desired hackathon from the map";
+    }
+    if(erStr != "") {
+        document.getElementById("er").style.visibility = "visible";
+        document.getElementById("er").innerHTML = "<strong>Error!</strong><br>" + erStr;
+    }
+    if(erStr == "") {
+        document.getElementById("er").style.visibility = "hidden";
+        ref.once("value", function(snap) {
+            var obj = snap.val();
+            console.log(obj);
+            for(var i in obj["Users"]) {
+                console.log("A" + obj["Users"][i]);
+                if(obj["Users"][i]["UserID"] == uid) {
+                	console.log(obj["Users"][i]);
+                    console.log(obj["Users"][i]["Name"]);
+                    name = obj["Users"][i]["Name"];
+                    email = obj["Users"][i]["EmailAddress"];
+                    addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), hackDate, pos);
+                    break;
                 }
-            });
-                console.log(uid + " - " + name + " - " + email);
-                  
-        //});
             }
-        }
-        function selectButton(btn) {
-            if(selectedBTN == btn) {
-                selectedBTN = "";
-                document.getElementById(btn).className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
-            }
-            else if(selectedBTN != "")
-            {
-                if(selectedBTN == 'l4') {
-                    selectedBTN = btn;
-                    document.getElementById('l4').className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
-                    document.getElementById(btn).className =  'w3-btn w3-white w3-round w3-hover-white';
-                }
-                else {
-                    selectedBTN = btn;
-                    document.getElementById('Driving').className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
-                    document.getElementById(btn).className =  'w3-btn w3-white w3-round w3-hover-white';
-                }
+        });
+        
+    }
+}
+function selectButton(btn) {
+    if(selectedBTN == btn) {
+        selectedBTN = "";
+        document.getElementById(btn).className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+    }
+    else if(selectedBTN != "")   {
+            if(selectedBTN == 'l4') {
+                selectedBTN = btn;
+                document.getElementById('l4').className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+                document.getElementById(btn).className =  'w3-btn w3-white w3-round w3-hover-white';
             }
             else {
                 selectedBTN = btn;
-                var btn = document.getElementById(btn);
-                btn.className = 'w3-btn w3-white w3-round w3-hover-white';
+                document.getElementById('Driving').className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+                document.getElementById(btn).className =  'w3-btn w3-white w3-round w3-hover-white';
             }
-            console.log(selectedBTN);
-        }
-      function initMap() {
-          console.log("Init");
-          ref = new Firebase("https://hackathondrive.firebaseio.com/")
-       // This example requires the Places library. Include the libraries=places
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-          geocoder = new google.maps.Geocoder();
-         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 39.887, lng: -96.437},
-          zoom: 4,
-            streetViewControl: false
-        });
-        var input = /** @type {!HTMLInputElement} */(
-            document.getElementById('pac-input'));
-        var types = document.getElementById('type-selector');
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
- document.getElementById("pac-input").style.visibility = "visible";
+    }
+    else {
+        selectedBTN = btn;
+        document.getElementById(btn).className = 'w3-btn w3-white w3-round w3-hover-white';
+    }
+    console.log(selectedBTN);
+}
+function initMap() {
+    console.log("Init");
+    ref = new Firebase("https://hackathondrive.firebaseio.com/")
+    //uid = ref.getAuth().uid;
+    uid = "98d79b87-b43d-42a6-b208-a11091b94f22";      
+    geocoder = new google.maps.Geocoder();
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 39.887, lng: -96.437},
+        zoom: 4,
+        streetViewControl: false
+    });
+    var input = /** @type {!HTMLInputElement} */(document.getElementById('pac-input'));
+    var types = document.getElementById('type-selector');
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo('bounds', map);
+    document.getElementById("pac-input").style.visibility = "visible";
                
                         //autocomplete.addListener('place_changed', function() {
           //infowindow.close();
-                var input = /** @type {!HTMLInputElement} */(
-                document.getElementById('pac-input'));
-                var infowindow = new google.maps.InfoWindow();
-                var types = document.getElementById('type-selector');
-                map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-                map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
-                var autocomplete = new google.maps.places.Autocomplete(input);
-                autocomplete.bindTo('bounds', map);
-                 
-                console.log("Input:" + autocomplete + " " + input);
-          
-                var pinColor = "00FF00";
-                var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-                                                           new google.maps.Size(71, 71),
-                                                           new google.maps.Point(0,0),
-                                                           new google.maps.Point(17, 34));
+               
+    var infowindow = new google.maps.InfoWindow();
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);  
+    autocomplete.bindTo('bounds', map);
+    console.log("Input:" + autocomplete + " " + input);
+    var pinColor = "00FF00";
+    var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+        new google.maps.Size(71, 71),
+        new google.maps.Point(0,0),
+        new google.maps.Point(17, 34));
         
                 var marker = new google.maps.Marker({
                     map: map,
@@ -295,7 +280,7 @@
          
           markerToAdd = marker;
 }   
-        function addHackathonMarker(event, address, lat, lng) {
+        function addHackathonMarker(event, address, lat, lng, date) {
             // console.log("IN"); 
                 var marker = new google.maps.Marker({position: {lat: lat, lng: lng}, map: map });
                 markers[mIndex] = marker;
@@ -305,7 +290,7 @@
                 
        
             
-            marker.addListener('click', function(){ hackathonLocEvent = event; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
+            marker.addListener('click', function(){ hackathonLocEvent = event; hackDate = date; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
                 markers[i].setMap(null);
             }});
             //hackathonLoc.addListener('click', function(){});
@@ -328,52 +313,80 @@
                 
                 if(obj["Events"][i]["Event"] == event) {
                     //console.log("IN");
-                    ref.child("Events").child(i).push({Address: address, Driving: desc, Email: email, Name: name, lat: posit.lat(), lng: posit.lng()});
+                    console.log(date);
+                    ref.child("Events").child(i).push({Day: date.day, Month: date.month, Year: date.year, Address: address, Driving: desc, Email: email, Name: name, lat: posit.lat(), lng: posit.lng()});
                 }
             }
             //add driver/l4 event to individual list
             for(var i in obj["Users"]) {
                 if(obj["Users"][i]["EmailAddress"] == email) {
-                    ref.child("Users").child(i).child("Events").push({lat: posit.lat(), lng: posit.lng(), Address: address, Driving: desc, Event: event});
+                    ref.child("Users").child(i).child("Events").push({Day: date.day, Month: date.month, Year: date.year, lat: posit.lat(), lng: posit.lng(), Address: address, Driving: desc, Event: event});
                 }
             }
          },function (errorObject) {console.log("The read failed: " + errorObject.code);});  
         }
           
-      
+      ref = new Firebase("https://hackathondrive.firebaseio.com/");
         
       //function generateTable(email) {
         var email = "EmailAddress";
-          var table = document.getElementById("tableEvents");
-        ref = new Firebase("https://hackathondrive.firebaseio.com/")
+        var name;
+
+        ref.once("value", function(snap) {
+                var obj = snap.val();
+                console.log(obj);
+                for(var i in obj["Users"]) {
+                    console.log("A" + obj["Users"][i]);
+                    if(obj["Users"][i]["UserID"] == uid) {
+                    	console.log(obj["Users"][i]);
+                        console.log(obj["Users"][i]["Name"]);
+                        name = obj["Users"][i]["Name"];
+                        email = obj["Users"][i]["EmailAddress"];
+                        var table = document.getElementById("tableEvents");
+        
           var tablestr = "<thead><tr><th>Event</th>        <th>Location</th><th>Dates</th></tr></thead><tbody>";
               ref.once("value", function(snapshot) {
                 
             //console.log(snapshot.val());
                
             var obj = snapshot.val();
-                 console.log('4');
-            //add driver/l4 to individual event
-            
+             
+          console.log("AAAAAAAAAAAAAAAAAA");
+            console.log(obj);
             for(var i in obj["Users"]) {
+                console.log("i: " + i + "email:" + obj["Users"][i]["EmailAddress"] + " - " + email);
                 if(obj["Users"][i]["EmailAddress"] == email) {
+                    console.log("BBBB");
+                    
+                    console.log(email);
+                    console.log(obj["Users"][i]);
                     for(var j in obj["Users"][i]["Events"])
                         {
+                            console.log("j: " + j);
                             var address = obj["Users"][i]["Events"][j]["Address"];
                             var Event = obj["Users"][i]["Events"][j]["Event"];
-                            var year = obj["Users"][i]["Events"][j]["year"];
-                            var day = obj["Users"][i]["Events"][j]["day"];
-                            var month = obj["Users"][i]["Events"][j]["month"];
+                            var year = obj["Users"][i]["Events"][j]["Year"];
+                            var day = obj["Users"][i]["Events"][j]["Day"];
+                            var month = obj["Users"][i]["Events"][j]["Month"];
                             tablestr += "<tr><td>" + Event + " - " + year  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
                         }
                 }
+             
             }
+                  console.log("TBLSTR: " + tablestr);
                   tablestr += "</tbody>"
                   table.innerHTML = tablestr;
+                  
          },function (errorObject) {console.log("The read failed: " + errorObject.code);}); 
+                        
+                    }
+                }
+            });
+       
+          
          showHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
-        function displayMapOfEvent(eventName) {
+            function displayMapOfEvent(eventName) {
                 ref.once("value", function(snap) {
                     var obj = snap.val();
                     
@@ -400,6 +413,7 @@
                             var info = new google.maps.InfoWindow({
                                 content: contentString
                             });
+                            console.log(contentString);
                             marker.addListener('mouseover', function() {
                                 info.open(map, marker);
                             });
@@ -407,18 +421,15 @@
                                 info.close(map, marker);
                             });
                             
-                            var markerArray = new Array();
-                            var infoArray = new Array();
-                            var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
+                                    var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
                                     
-                                    markerArray[x] = new google.maps.Marker({
+                                    var marker1 = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
-                                        title: obj["Events"][i][j]["Name"],
+                                        title: obj["Events"][i][j]["Name"]
                                     });
                                      
                                     var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
@@ -427,18 +438,16 @@
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
     
-                                    infoArray[x] = new google.maps.InfoWindow({
-                                        content: contentString1
+                                    var info1 = new google.maps.InfoWindow({
+                                        content: contentString
                                     });
                             
-                                    markerArray[x].addListener('mouseover', function() {
-                                        (infoArray[x]).open(map,markerArray[x]);
+                                    marker1.addListener('mouseover', function() {
+                                        info1.open(map,marker1);
                                     });
-                                    markerArray[x].addListener('mouseout', function() {
-                                        (infoArray[x]).close(map,markerArray[x]);
+                                    marker1.addListener('mouseout', function() {
+                                        info1.close(map,marker1);
                                     });
-                                    
-                                    x++;
                                 }
                             }
                         }
@@ -452,11 +461,14 @@
          for(var i in obj["Events"]) {
             // console.log(obj["Events"][i]["Address"] + " - " + obj["Events"][i]["Lat"] + " - " + obj["Events"][i]["Lng"]);
              if((obj["Events"][i]["Lat"]) != undefined && (obj["Events"][i]["Lng"]) != undefined) {
-            addHackathonMarker(obj["Events"][i]["Event"], obj["Events"][i]["Address"],obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
-             }
-             else{
-                 //console.log(obj["Events"][i]["Address"] + " doesnt have a lat");
+                 var date = {
+                     year: obj["Events"][i]["Year"],
+                     month: obj["Events"][i]["Month"],
+                     day: obj["Events"][i]["Day"]
                  }
+                 
+            addHackathonMarker(obj["Events"][i]["Event"], obj["Events"][i]["Address"],obj["Events"][i]["Lat"], obj["Events"][i]["Lng"], date);
+             }
          }
          
          
@@ -468,7 +480,7 @@
                 geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         return results[0].geometry.location;
-                        console.log(address);
+                       
                     } else {
                         alert("Geocode was not successful for the following reason: " + status);
                     }
