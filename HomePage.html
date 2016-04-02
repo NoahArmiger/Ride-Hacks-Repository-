@@ -310,7 +310,7 @@
                 for(var i in obj["Events"]) {      
                     //console.log(obj["Events"][i]["EventName"] + " - " + event + " - aaaaa" + i);
                 
-                if(obj["Events"][i]["EventName"] == event) {
+                if(obj["Events"][i]["Event"] == event) {
                     //console.log("IN");
                     ref.child("Events").child(i).push({Address: address, Driving: desc, Email: email, Name: name});
                 }
