@@ -41,7 +41,7 @@ function createAccount(email, password, name) {
         mRef.child("Users").push({
             EmailAddress: email,
             Name: name,
-            UserID: mRef.getAuth().uid()
+            UserID: mRef.getAuth().uid
         });
     }
 }
