@@ -2,9 +2,14 @@
 <html>
     
     <head>
+        <style type="text/css">
+            html, body { height: 100%; margin: 0; padding: 0; }
+            #map { height: 100%; }
+        </style>
         <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     </head>
     <body>
+        <div id="map"></div>
         <script>
             //Used to login returning users
             function login(email, password) {
@@ -53,12 +58,73 @@
                 }
                 
             }
-
-            var mRef = new Firebase("https://glaring-inferno-647.firebaseio.com/");
+            
+            //Create a map centered on US with some stylers
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: 39.887, lng: -96.437},
+                    zoom: 5,
+                    styles: [{
+                        featureType: 'poi',
+                        stylers: [{ visibility: 'off' }]  // Turn off points of interest.
+                    }, {
+                        featureType: 'transit.station',
+                        stylers: [{ visibility: 'off' }]  // Turn off bus stations, train stations, etc.
+                    }]
+                });
+            }
+            
+            //Take in an event name to put all of its members address on a map
+            function displayMap(eventName) {
+                mRef.once("value", function(snap) {
+                    var obj = snap.val();
+                    
+                    for(var i in obj["Events"]) {
+                        if(obj["Events"][i]["EventName"] == eventName) {
+                            for(var j in obj["Events"][i]) {
+                                var address = obj["Events"][i][j]["Address"];
+                                if(address != null) {
+                                    codeAddress(address);
+                                    //console.log(address);
+                                    //console.log("was added");
+                                }
+                                else {
+                                    alert(address);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function codeAddress(address) {
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode( { 'address': address}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        map.setCenter(results[0].geometry.location);
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location
+                        });
+                        console.log(address);
+                    } else {
+                        alert("Geocode was not successful for the following reason: " + status);
+                    }
+                });
+            }
+            
+            //var mRef = new Firebase("https://glaring-inferno-647.firebaseio.com/");
+            var mRef = new Firebase("https://hackathondrive.firebaseio.com/");
+            var map;
+            
             
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
+            displayMap("EventName");
         
+        </script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPuhAA-CpEQ6g9BuOJxg1tfe5PF9BjmXc&libraries=visualization&callback=initMap">
         </script>
     </body>
 </html>
