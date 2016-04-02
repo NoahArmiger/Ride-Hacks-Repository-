@@ -407,18 +407,18 @@
                                 info.close(map, marker);
                             });
                             
+                            var markerArray[];
+                            int i = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
                                     var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
-                                    var marker1 = new google.maps.Marker({
+                                    markerArray[i] = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
                                     });
-                                    
-                                    console.log(marker1.getPosition().lat);
                                      
                                     var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
@@ -430,12 +430,14 @@
                                         content: contentString1
                                     });
                             
-                                    marker1.addListener('mouseover', function() {
-                                        info1.open(map,marker1);
+                                    markerArray[i].addListener('mouseover', function() {
+                                        info1.open(map,markerArray[i]);
                                     });
-                                    marker1.addListener('mouseout', function() {
-                                        info1.close(map,marker1);
+                                    markerArray[i].addListener('mouseout', function() {
+                                        info1.close(map,markerArray[i]);
                                     });
+                                    
+                                    i++;
                                 }
                             }
                         }
