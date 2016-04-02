@@ -4,7 +4,7 @@
     <head>
         <style type="text/css">
             html, body { height: 100%; margin: 0; padding: 0; }
-            #map { height: 100%; }
+            #map { height: 50%; }
         </style>
         <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     </head>
@@ -74,27 +74,29 @@
                 });
             }
             
-            //Take in an event name to put all of its members address on a map
+            //Take in an event name to put all of its members addresses and its own address on map
             function displayMap(eventName) {
                 mRef.once("value", function(snap) {
                     var obj = snap.val();
                     
                     for(var i in obj["Events"]) {
-                        if(obj["Events"][i]["EventName"] == eventName) {
-                            if(obj["Events"][i]["Address"] != null) {
-                                var latLng = new google.maps.LatLng(obj["Events"][i]["lat"], obj["Events"][i]["lng"]);
+                        if(obj["Events"][i]["Event"] == eventName) {
+                            var latLng = new google.maps.LatLng(obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
                                     
-                                var marker = new google.maps.Marker({
-                                    map: map,
-                                    position: latLng,
-                                    title: eventName
-                                });
-                            }
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                position: latLng,
+                                title: eventName,
+                                icon: {
+                                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                                    scale: 5
+                                }
+                            });
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
                                     
-                                    var latLng = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
+                                    var latLng = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
                                     
                                     var marker = new google.maps.Marker({
                                         map: map,
@@ -103,7 +105,7 @@
                                     });
                                 }
                                 else {
-                                    alert(address);
+                                    //alert(address);
                                 }
                             }
                         }
@@ -128,10 +130,9 @@
             var mRef = new Firebase("https://hackathondrive.firebaseio.com/");
             var map;
             
-            
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
-            displayMap("EventName");
+            displayMap("EagleHacks");
         
         </script>
         <script async defer
