@@ -190,7 +190,9 @@
                 var obj = snap.val();
                 
                 for(var i in obj["Users"]) {
+                    console.Log("A" + obj["Users"][i]);
                     if(obj["Users"][i]["UserID"] == uid) {
+                    	console.Log("B" + obj["Users"][i]);
                         name = obj["Users"][i]["Name"];
                         email = obj["Users"][i]["EmailAddress"];
                     }
