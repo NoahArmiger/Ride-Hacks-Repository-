@@ -88,7 +88,6 @@
                                     });
                                     
                                     markerArray[x] = marker1;
-                                    x++;
                                      
                                     contentArray[x] = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
@@ -98,9 +97,9 @@
                                     
                                     marker1.addListener('mouseover', function() {
                                         var notFound = true;
-                                        for(var j; j<1000 && notFound; j++) {
-                                            if(markerArray[j] == this) {
-                                                info1.setContent(contentArray[j]);
+                                        for(var k; k<1000 && notFound; k++) {
+                                            if(markerArray[k] == this) {
+                                                info1.setContent(contentArray[k]);
                                                 notFound = false;
                                             }
                                         }
@@ -109,7 +108,7 @@
                                     marker1.addListener('mouseout', function() {
                                         info1.close(map,this);
                                     });
-                                    
+                                    x++;
                                
                                 }
                             }
