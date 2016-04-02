@@ -408,17 +408,16 @@
                             });
                             
                             var markerArray = new Array();
-                            var latLngArray = new Array();
                             var infoArray = new Array();
                             var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    latLngArray[x] = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
+                                    latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
                                     markerArray[x] = new google.maps.Marker({
                                         map: map,
-                                        position: latLngArray[x],
+                                        position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
                                     });
                                      
@@ -433,10 +432,10 @@
                                     });
                             
                                     markerArray[x].addListener('mouseover', function() {
-                                        infoArray[x].open(map,markerArray[x]);
+                                        (infoArray[x]).open(map,markerArray[x]);
                                     });
                                     markerArray[x].addListener('mouseout', function() {
-                                        infoArray[x].close(map,markerArray[x]);
+                                        (infoArray[x]).close(map,markerArray[x]);
                                     });
                                     
                                     x++;
