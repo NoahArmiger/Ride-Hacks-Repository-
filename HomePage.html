@@ -299,8 +299,9 @@ function initMap() {
             
             marker.addListener('click', function(){ hackathonLocEvent = event; hackDate = date; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
                 markers[i].setMap(null);
-                
-            }});
+                }
+            mIndex = 0; markers = {};
+            });
             marker.addListener('mouseover', function(){
                 
              infowindow.setContent(event + "<br>" + address + "<br>" + date.month + " " + date.day + ", " + date.year);
@@ -380,7 +381,8 @@ function initMap() {
                             var year = obj["Users"][i]["Events"][j]["Year"];
                             var day = obj["Users"][i]["Events"][j]["Day"];
                             var month = obj["Users"][i]["Events"][j]["Month"];
-                            tablestr += "<tr><td>" + Event + " - " + year  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
+                            var desc = obj["Users"][i]["Events"][j]["Driving"]
+                            tablestr += "<tr><td>" + Event + "<br>" + desc  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
                         }
                 }
              
@@ -401,6 +403,7 @@ function initMap() {
               for(var i = 0; i < markerArray.length;i++) {
                   markerArray[i].setMap(null);
               }
+                
                  /*for(var i = 0; i < markers.length;i++) {
                   markers[i].setMap(null);
               }
