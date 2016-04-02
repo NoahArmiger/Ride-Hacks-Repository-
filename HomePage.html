@@ -180,8 +180,24 @@
             }
             if(erStr == "") {
                 document.getElementById("er").style.visibility = "hidden";
-                console.log("DATA: " + ref.getAuth().uid);
-                  addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, "Quentin Huyett", "qhuyett1@umbc.edu", document.getElementById(selectedBTN).innerHTML.trim(), "now");
+               // console.log("DATA: " + ref.getAuth().uid);
+                console.log(hackathonLocEvent + " - " + document.getElementById("pac-input"));
+                var uid = ref.getAuth().uid;
+            
+            var name;
+            var email;
+            ref.once("value", function(snap) {
+                var obj = snap.val();
+                
+                for(var i in obj["Users"]) {
+                    if(obj["Users"][i]["UserID"] == uid) {
+                        name = obj["Users"][i]["Name"];
+                        email = obj["Users"][i]["EmailAddress"];
+                    }
+
+                }
+            });
+                  addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, name, email, document.getElementById(selectedBTN).innerHTML.trim(), "now");
         //});
             }
         }
@@ -287,9 +303,9 @@
               //  console.log(mIndex);
             
                 hackathonLoc = marker;
-            hackathonLoc = event;
+       
             
-            marker.addListener('click', function(){displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
+            marker.addListener('click', function(){hackathonLocEvent = event; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
                 markers[i].setMap(null);
             }});
             //hackathonLoc.addListener('click', function(){});
