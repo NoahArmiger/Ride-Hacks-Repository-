@@ -386,8 +386,8 @@ function initMap() {
           
          showHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
-             function displayMapOfEvent(eventName) {
-                ref.once("value", function(snap) {
+              function displayMapOfEvent(eventName) {
+                mRef.once("value", function(snap) {
                     var obj = snap.val();
                     
                     for(var i in obj["Events"]) {
@@ -414,10 +414,10 @@ function initMap() {
                                 content: contentString
                             });
                             marker.addListener('mouseover', function() {
-                                info.open(map, marker);
+                                info.open(map, this);
                             });
                             marker.addListener('mouseout', function() {
-                                info.close(map, marker);
+                                info.close(map, this);
                             });
                             
                             var markerArray = new Array();
