@@ -76,6 +76,12 @@
         <div id="map"></div>
         <script>
             //Used to login returning users
+            function doit(){ 
+            //gg ez account creation (like avalon)
+               createAccount( document.getElementById("email").value, document.getElementById("password").value, document.getElementById("name").value);
+  
+              
+            }
             function login(email, password) {
                 mRef.authWithPassword({
                     email   : email,
@@ -128,8 +134,7 @@
             //var mRef = new Firebase("https://glaring-inferno-647.firebaseio.com/");
             var mRef = new Firebase("https://hackathondrive.firebaseio.com/");
         
-           createAccount( document.getElementById("email").value, document.getElementById("password").value, document.getElementById("name").value);
-      </script>
+              </script>
     <script>
     </script>
     </body>
