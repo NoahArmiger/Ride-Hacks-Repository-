@@ -389,7 +389,7 @@ function initMap() {
                 var markerArray = new Array();
             
             function displayMapOfEvent(eventName) {
-                mRef.once("value", function(snap) {
+                ref.once("value", function(snap) {
                     var obj = snap.val();
                     
                     for(var i in obj["Events"]) {
