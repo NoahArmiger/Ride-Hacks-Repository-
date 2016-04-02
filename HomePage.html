@@ -74,7 +74,7 @@
    <div class="container">
        <br>
      
-  <h2 align = "center">View Your Events</h2>
+  <h2 align = "center">Your Events</h2>
        <br> 
   <p>Click on an event to see more information</p>            
   <table id = "tableEvents" class="table table-hover">
@@ -107,8 +107,13 @@
 <div class = "w3-center">
     <nav class="w3-btn w3-blue">
   <ul class="nav navbar-nav">
-    <li><a class = "w3-hover-blue" onclick = "showHackathons()" a href="#map"> Show All Events</a></li>
-  
+    <li><a class = "w3-hover-blue" onclick = "showHackathons()"> Show All Events</a> </li>
+
+</nav>
+          <nav class="w3-btn w3-blue">
+  <ul class="nav navbar-nav">
+    <li><a class = "w3-hover-blue" onclick = "showYourHackathons()"> Show Your Events</a> </li>
+
 </nav>
 </div>
       <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
@@ -130,10 +135,10 @@
     </div>
           
     <div class = "w3-center">
-          <div id = 'er' style = "visibility: hidden" class="alert alert-danger" role="alert">
+          <div id = 'er' style = "visibility: hidden" class="alert" role="alert">
   <strong>Error!</strong> Change a few things up and try submitting again.
 </div>
-        <button class= "w3-btn w3-blue w3-rounder w3-round w3-hover-white w3-center" onClick = "verifyPin()">Add pin </button>
+        <button class= "w3-btn w3-blue w3-rounder w3-round w3-hover-white w3-center" id = "adder" onClick = "verifyPin()">Add pin </button>
        
     </div>
    <br><br>
@@ -155,7 +160,6 @@ var curloc;
 var hackDate;
 var pos;
 var mIndex = 0;
-var muIndex = 0;
 var markers = new Array();
 var userMarkers = new Array();
 var selectedBTN;
@@ -175,6 +179,7 @@ function verifyPin() {
     }
     if(erStr != "") {
         document.getElementById("er").style.visibility = "visible";
+        document.getElementById("er").class += "alert-danger"
         document.getElementById("er").innerHTML = "<strong>Error!</strong><br>" + erStr;
     }
     if(erStr == "") {
@@ -194,7 +199,10 @@ function verifyPin() {
                 }
             }
         });
-        
+        document.getElementById("er").style.visibility = "visible";
+        document.getElementById("er").class += "alert alert-success"
+        document.getElementById("er").innerHTML = "<strong>Pin added! </strong>";
+
     }
 }
 function selectButton(btn) {
@@ -286,13 +294,29 @@ function initMap() {
                 markers[mIndex] = marker;
                 mIndex++;
               //  console.log(mIndex);
-            
-                
+               var infowindow =  new google.maps.InfoWindow({ content: "TEST"});
+                console.log(infowindow);
+            console.log(address);
+            console.log("ZZZZZZZZZZZZ");
+               
+
        
             
             marker.addListener('click', function(){ hackathonLocEvent = event; hackDate = date; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
                 markers[i].setMap(null);
-            }});
+                
+            }markers = {}; mIndex = 0;});
+            marker.addListener('mouseover', function(){
+                
+             infowindow.setContent(event + "<br>" + address + "<br>" + date.month + " " + date.day + ", " + date.year);
+                infowindow.open(map, this);
+               
+            });
+            marker.addListener('mouseout', function(){
+               
+                infowindow.close();
+            });
+            
             //hackathonLoc.addListener('click', function(){});
             
                  
@@ -313,7 +337,7 @@ function initMap() {
                 
                 if(obj["Events"][i]["Event"] == event) {
                     //console.log("IN");
-                    console.log(date);
+                   // console.log(date);
                     ref.child("Events").child(i).push({Day: date.day, Month: date.month, Year: date.year, Address: address, Driving: desc, Email: email, Name: name, lat: posit.lat(), lng: posit.lng()});
                 }
             }
@@ -334,12 +358,12 @@ function initMap() {
 
         ref.once("value", function(snap) {
                 var obj = snap.val();
-                console.log(obj);
+               // console.log(obj);
                 for(var i in obj["Users"]) {
-                    console.log("A" + obj["Users"][i]);
+                  //  console.log("A" + obj["Users"][i]);
                     if(obj["Users"][i]["UserID"] == uid) {
-                    	console.log(obj["Users"][i]);
-                        console.log(obj["Users"][i]["Name"]);
+                    	//console.log(obj["Users"][i]);
+                      //  console.log(obj["Users"][i]["Name"]);
                         name = obj["Users"][i]["Name"];
                         email = obj["Users"][i]["EmailAddress"];
                         var table = document.getElementById("tableEvents");
@@ -351,18 +375,18 @@ function initMap() {
                
             var obj = snapshot.val();
              
-          console.log("AAAAAAAAAAAAAAAAAA");
-            console.log(obj);
+          //console.log("AAAAAAAAAAAAAAAAAA");
+            //console.log(obj);
             for(var i in obj["Users"]) {
-                console.log("i: " + i + "email:" + obj["Users"][i]["EmailAddress"] + " - " + email);
+               // console.log("i: " + i + "email:" + obj["Users"][i]["EmailAddress"] + " - " + email);
                 if(obj["Users"][i]["EmailAddress"] == email) {
-                    console.log("BBBB");
+                   // console.log("BBBB");
                     
-                    console.log(email);
-                    console.log(obj["Users"][i]);
+                   // console.log(email);
+                   // console.log(obj["Users"][i]);
                     for(var j in obj["Users"][i]["Events"])
                         {
-                            console.log("j: " + j);
+                           // console.log("j: " + j);
                             var address = obj["Users"][i]["Events"][j]["Address"];
                             var Event = obj["Users"][i]["Events"][j]["Event"];
                             var year = obj["Users"][i]["Events"][j]["Year"];
@@ -373,7 +397,7 @@ function initMap() {
                 }
              
             }
-                  console.log("TBLSTR: " + tablestr);
+                  //console.log("TBLSTR: " + tablestr);
                   tablestr += "</tbody>"
                   table.innerHTML = tablestr;
                   
@@ -384,9 +408,9 @@ function initMap() {
             });
        
           
-         showHackathons();
+         showYourHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
-                var markerArray = new Array();
+             var markerArray = new Array();
             var contentArray = new Array();
             
             function displayMapOfEvent(eventName) {
@@ -398,6 +422,7 @@ function initMap() {
                     for(var i in obj["Events"]) {
                         if(obj["Events"][i]["Event"] == eventName) {
                             var latLng = new google.maps.LatLng(obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
+
                             var marker = new google.maps.Marker({
                                 map: map,
                                 position: latLng,
@@ -411,13 +436,16 @@ function initMap() {
                             });
                             
                             hackathonLoc = marker;
+
                             var contentString = '<div class = "w3-container w3-padding w3-center">' +
                                 '<h2>' + obj["Events"][i]["Event"] + '</h2>' +
                                 '<p>' + obj["Events"][i]["Address"] + '</p>' + '<p>' + obj["Events"][i]["Month"] + ' ' + obj["Events"][i]["Day"] + ', ' + obj["Events"][i]["Year"] + '</p>' +
                                 '</div>';
+
                             var info = new google.maps.InfoWindow({
                                 content: contentString
                             });
+
                             marker.addListener('mouseover', function() {
                                 info.open(map, this);
                             });
@@ -468,6 +496,7 @@ function initMap() {
                 });
             }
              function showHackathons() {
+                 //hackathonLoc.setMap(null);
                  if(hackathonLoc != null) { hackathonLoc.setMap(null); }
          ref.once("value", function(snapshot) {
              var obj = snapshot.val();
@@ -487,6 +516,38 @@ function initMap() {
          
          }, function (er) {});
         }
+        
+        function showYourHackathons() {
+            
+                 //hackathonLoc.setMap(null);
+                 if(hackathonLoc != null) { hackathonLoc.setMap(null); }
+         ref.once("value", function(snapshot) {
+             var obj = snapshot.val();
+         for(var i in obj["Users"]) {
+            // console.log(obj["Events"][i]["Address"] + " - " + obj["Events"][i]["Lat"] + " - " + obj["Events"][i]["Lng"]);
+             
+             if(obj["Users"][i]["UserID"] == uid){
+             for(var j in obj["Users"][i]["Events"]){
+                 console.log("AAAAAAAAAAA");
+             console.log(obj);
+                 console.log(obj["Users"][i]["Events"][j]);
+                 var date = {
+                     year: obj["Users"][i]["Events"][j]["Year"],
+                     month: obj["Users"][i]["Events"][j]["Month"],
+                     day: obj["Users"][i]["Events"][j]["Day"]
+                 
+                 }
+                 console.log(obj["Users"][i]["Events"][j]["Event"] + " - " + obj["Users"][i]["Events"][j]["Address"] + " - " + obj["Users"][i]["Events"][j]["lat"] + obj["Users"][i]["Events"][j]["lng"] + " - " +  date.day + " - " + date.month + " - " + date.year);
+            addHackathonMarker(obj["Users"][i]["Events"][j]["Event"], obj["Users"][i]["Events"][j]["Address"],obj["Users"][i]["Events"][j]["lat"], obj["Users"][i]["Events"][j]["lng"], date);
+             
+                 }
+         }
+         }
+         
+         
+         }, function (er) {});
+        }
+        
             //return a latLng for address
             function codeAddress(address) {
                 var geocoder = new google.maps.Geocoder();
