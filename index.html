@@ -1,80 +1,58 @@
 <!doctype html>
 <html>
-<head>
-	<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-	<style>
-		.center-this {
-			float: none;
-			margin: 0 auto;
-		}
-	</style>
-	<title>rideHacks</title>
-</head>
-<body>
-	<br> 
-<div class = "w3-container w3-blue w3-round-Xlarge w3-padding-jumbo" >    
-<h1 align = "center">Welcome to rideHacks.com </h1>
-        </div> 
-    <div class = "w3-container w3-padding-jumbo w3-light-grey"
-<div class="container col-md-5 center-block center-this">   
-	<div class="form-signin">
-		
-	        <br>
-	        <label for="inputEmail" class="sr-only">Email address</label>
-	        <input type="email" id="user" class="form-control" placeholder="Email address" required autofocus>
-	        <br>
-	        <label for="inputPassword" class="sr-only">Password</label>
-	        <input type="password" id="pass" class="form-control" placeholder="Password" required>
-	        <div class="checkbox">
-	          <label>
-	            <input type="checkbox" value="remember-me"> Remember me
-	          </label>
-	        </div>
+    <head>
+        <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <style>
+            .center-this {
+                float: none;
+                margin: 0 auto;
+		  }
+	   </style>
+	   <title>rideHacks</title>
+    </head>
+    <body>
+        <br> 
+        <div class = "w3-container w3-blue w3-round-Xlarge w3-padding-jumbo" >    
+            <h1 align = "center">rideHacks</h1>
+            </div> 
+        <div class = "w3-container w3-padding-jumbo w3-light-grey">
+            <div class="w3-container col-md-5 center-block center-this">   
+                <div class="form-signin">
+           
+                    <br>
+                    <label for="inputEmail" class="sr-only">Email address</label>
+                    <input type="email" id="user" class="form-control" placeholder="Email address" required autofocus>
+                    <br>
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" id="pass" class="form-control" placeholder="Password" required>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="remember-me"> Remember me
+                        </label>
+                    </div>
 	   
-	        <button id = "signIn" class="btn btn-lg btn-primary btn-block" onclick="doauthorize()">Sign in</button>
-	        <br>
-	        <button class="btn btn-lg btn-secondary btn-block" onclick="window.location.href='https://noaharmiger.github.io/NewUser'">New User</button>
-	</div>
-</div>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<
-</div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
-<script>
-Pleas
-    function doauthorize(){
-        
-        var ref = new Firebase("https://testfb342016.firebaseio.com");
-        ref.authWithPassword({
-			  "email": $("#user").val(),
-			  "password": $("#pass").val()
-			}, function(error, authData) {
-			  if (error) {
-			    console.log("Login Failed!", error);
-			  } else {
-			  	document.location = "/viewclass"
-			    console.log("Authenticated successfully with payload:", authData);
-			  }
-        });
-    }
-    $(document).ready(function(){
-    
-        console.log("jquery works!");
-        
-        
-        
-    });
-</script>
-</body>
+                    <button id = "signIn" class="btn btn-lg btn-primary btn-block" onclick="doIt()">Sign in</button>
+                    <br>
+                    <button class="btn btn-lg btn-secondary btn-block" onclick="window.location.href='https://noaharmiger.github.io/NewUser'">New User</button>
+                </div>
+            </div>
+            <br>
+            <br>    
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
+        <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+        <script>
+            function doIt() {
+                login(document.getElementById("user"), document.getElementById("pass"));
+            }
+        </script>
+    </body>
 </html>

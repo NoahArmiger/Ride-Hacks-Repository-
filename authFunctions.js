@@ -10,6 +10,8 @@ function login(email, password, isNewUser, name) {
             console.log("Authenticated successfully with payload:", authData)
             if(isNewUser) {
                 successCreated(email,name,authData);
+            } else {
+                window.location.href='homePage.html';
             }
         }
     });
