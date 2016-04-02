@@ -27,7 +27,6 @@
         outline: none;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
-
       #pac-input {
         background-color: #fff;
         font-family: Roboto;
@@ -38,21 +37,17 @@
         text-overflow: ellipsis;
         width: 300px;
       }
-
       #pac-input:focus {
         border-color: #4d90fe;
       }
-
       .pac-container {
         font-family: Roboto;
       }
-
       #type-selector {
         color: #fff;
         background-color: #4d90fe;
         padding: 5px 11px 0px 11px;
       }
-
       #type-selector label {
         font-family: Roboto;
         font-size: 13px;
@@ -179,28 +174,31 @@
             document.getElementById("er").innerHTML = "<strong>Error!</strong><br>" + erStr;
             }
             if(erStr == "") {
+            
                 document.getElementById("er").style.visibility = "hidden";
                // console.log("DATA: " + ref.getAuth().uid);
                 console.log(hackathonLocEvent + " - " + document.getElementById("pac-input"));
+                
                 var uid = ref.getAuth().uid;
+                //uid = "98d79b87-b43d-42a6-b208-a11091b94f22";
             
-            var name;
-            var email;
             ref.once("value", function(snap) {
                 var obj = snap.val();
-                
+                console.log(obj);
                 for(var i in obj["Users"]) {
-                    console.Log("A" + obj["Users"][i]);
+                    console.log("A" + obj["Users"][i]);
                     if(obj["Users"][i]["UserID"] == uid) {
-                    	console.Log("B" + obj["Users"][i]);
+                    	console.log(obj["Users"][i]);
+                        console.log(obj["Users"][i]["Name"]);
                         name = obj["Users"][i]["Name"];
                         email = obj["Users"][i]["EmailAddress"];
+                        addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), "now");
+                        break;
                     }
-
                 }
             });
                 console.log(uid + " - " + name + " - " + email);
-                  addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, name, email, document.getElementById(selectedBTN).innerHTML.trim(), "now");
+                  
         //});
             }
         }
@@ -243,11 +241,9 @@
         });
         var input = /** @type {!HTMLInputElement} */(
             document.getElementById('pac-input'));
-
         var types = document.getElementById('type-selector');
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
-
         var autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo('bounds', map);
  document.getElementById("pac-input").style.visibility = "visible";
@@ -296,7 +292,6 @@
             });
          
           markerToAdd = marker;
-
 }   
         function addHackathonMarker(event, address, lat, lng) {
             // console.log("IN"); 
@@ -477,7 +472,6 @@
             }
             
         
-
     </script>
 </body> 
 </html> 
