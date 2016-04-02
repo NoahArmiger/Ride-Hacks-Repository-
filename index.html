@@ -1,1 +1,61 @@
+<!doctype html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<style>
+		.center-this {
+			float: none;
+			margin: 0 auto;
+		}
+	</style>
+</head>
+<body>
 
+    
+<div class="container col-md-5 center-block center-this">   
+	<div class="form-signin">
+	        <h2 class="form-signin-heading">Please sign in</h2>
+	        <label for="inputEmail" class="sr-only">Email address</label>
+	        <input type="email" id="user" class="form-control" placeholder="Email address" required autofocus>
+	        <label for="inputPassword" class="sr-only">Password</label>
+	        <input type="password" id="pass" class="form-control" placeholder="Password" required>
+	        <div class="checkbox">
+	          <label>
+	            <input type="checkbox" value="remember-me"> Remember me
+	          </label>
+	        </div>
+	      <font size= "4" color="red">Error Invalid Username/Password Combination! </font>
+	        <button id = "signIn" class="btn btn-lg btn-primary btn-block" onclick="doauthorize()">Sign in</button>
+	        <a class="btn btn-lg btn-secondary btn-block" href="index.html">Home</a>
+	</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+<script>
+Pleas
+    function doauthorize(){
+        
+        var ref = new Firebase("https://testfb342016.firebaseio.com");
+        ref.authWithPassword({
+			  "email": $("#user").val(),
+			  "password": $("#pass").val()
+			}, function(error, authData) {
+			  if (error) {
+			    console.log("Login Failed!", error);
+			  } else {
+			  	document.location = "/viewclass"
+			    console.log("Authenticated successfully with payload:", authData);
+			  }
+        });
+    }
+    $(document).ready(function(){
+    
+        console.log("jquery works!");
+        
+        
+        
+    });
+</script>
+</body>
+</html>
