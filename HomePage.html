@@ -386,7 +386,9 @@ function initMap() {
           
          showHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
-               function displayMapOfEvent(eventName) {
+                var markerArray = new Array();
+            
+            function displayMapOfEvent(eventName) {
                 ref.once("value", function(snap) {
                     var obj = snap.val();
                     
@@ -420,7 +422,7 @@ function initMap() {
                                 info.close(map, this);
                             });
                             
-                            var markerArray = new Array();
+                            
                             var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
@@ -434,12 +436,14 @@ function initMap() {
                                     });
                                     
                                     markerArray[x] = marker1;
+                                    x++;
                                      
                                     var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
                                         '<p>' + obj["Events"][i][j]["Email"] + '</p>' +
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
+                                    console.log(contentString1);
                                     
                                     var info1 = new google.maps.InfoWindow({
                                         content: "test"
@@ -453,7 +457,7 @@ function initMap() {
                                         info1.close(map,this);
                                     });
                                     
-                                    x++;
+                               
                                 }
                             }
                         }
