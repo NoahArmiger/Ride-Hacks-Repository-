@@ -151,6 +151,7 @@
         var hackathonLoc;
         var hackathonLocEvent;
         var curloc;
+        var pos;
         var mIndex = 0;
         var muIndex = 0;
         var markers = new Array();
@@ -179,8 +180,8 @@
                // console.log("DATA: " + ref.getAuth().uid);
                 console.log(hackathonLocEvent + " - " + document.getElementById("pac-input"));
                 
-                var uid = ref.getAuth().uid;
-                //uid = "98d79b87-b43d-42a6-b208-a11091b94f22";
+                //var uid = ref.getAuth().uid;
+                uid = "98d79b87-b43d-42a6-b208-a11091b94f22";
             
             ref.once("value", function(snap) {
                 var obj = snap.val();
@@ -192,7 +193,7 @@
                         console.log(obj["Users"][i]["Name"]);
                         name = obj["Users"][i]["Name"];
                         email = obj["Users"][i]["EmailAddress"];
-                        addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), "now");
+                        addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), "now", pos);
                         break;
                     }
                 }
@@ -277,6 +278,7 @@
           var place = autocomplete.getPlace();
           
           marker.setPosition(place.geometry.location);
+          pos = place.geometry.location;
           marker.setVisible(true);
     
           var address = '';
@@ -300,17 +302,17 @@
                 mIndex++;
               //  console.log(mIndex);
             
-                hackathonLoc = marker;
+                
        
             
-            marker.addListener('click', function(){hackathonLocEvent = event; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
+            marker.addListener('click', function(){ hackathonLocEvent = event; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
                 markers[i].setMap(null);
             }});
             //hackathonLoc.addListener('click', function(){});
             
                  
         }                       
-        function addDriveLocation(event, address, name, email, desc, date)
+        function addDriveLocation(event, address, name, email, desc, date,posit)
         {
             
             console.log('entered');
@@ -332,7 +334,7 @@
             //add driver/l4 event to individual list
             for(var i in obj["Users"]) {
                 if(obj["Users"][i]["EmailAddress"] == email) {
-                    ref.child("Users").child(i).child("Events").push({Address: address, Driving: desc, Event: event});
+                    ref.child("Users").child(i).child("Events").push({lat: posit.lat(), lng: posit.lng(), Address: address, Driving: desc, Event: event});
                 }
             }
          },function (errorObject) {console.log("The read failed: " + errorObject.code);});  
@@ -389,7 +391,7 @@
                                     fillOpacity: 1,
                                 }
                             });
-                            
+                            hackathonloc = marker;
                             var contentString = '<div class = "w3-container w3-padding w3-center">' +
                                 '<h2>' + obj["Events"][i]["Event"] + '</h2>'+
                                 '<p>' + obj["Events"][i]["Address"] + '</p>' +
@@ -419,7 +421,7 @@
                                         position: latLng,
                                         title: obj["Events"][i][j]["Name"],
                                     });
-                                     
+                                     hackathonLoc = marker;
                                     var contentString = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
                                         '<p>' + obj["Events"][i][j]["EmailAddress"] + '</p>' +
@@ -442,7 +444,8 @@
                     }
                 });
             }
-             function showHackathons() {  
+             function showHackathons() {
+                 if(hackathonLoc != null) { hackathonloc.setMap(null); }
          ref.once("value", function(snapshot) {
              var obj = snapshot.val();
          for(var i in obj["Events"]) {
