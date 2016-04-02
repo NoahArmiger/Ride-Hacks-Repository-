@@ -112,7 +112,7 @@
 <div class = "w3-center">
     <nav class="w3-btn w3-blue">
   <ul class="nav navbar-nav">
-    <li><a class = "w3-hover-blue" a href="#map"> Show All Events</a></li>
+    <li><a class = "w3-hover-blue" onclick = "showHackathons()" a href="#map"> Show All Events</a></li>
   
 </nav>
 </div>
@@ -284,31 +284,16 @@
                 markers[mIndex] = marker;
                 mIndex++;
               //  console.log(mIndex);
-                marker.addListener('click', function() { 
-                    //console.log("add");
-                // map.setZoom(8);
-                //map.setCenter(marker.getPosition());
+            
                 hackathonLoc = marker;
-                hackathonLocEvent = event;
-                for(var i = 0; i < mIndex;i++) 
-                    {
-                        console.log(marker);
-                        markers[i].setMap(null);
-                    }
-                    hackathonLoc.setMap(map);
-                    hackathonLoc.addListener('click', function(){});
-                 ref.once("value", function(snapshot) {
-                    var obj = snapshot.val();
-                    for(var i in obj["Users"]) {
-                    for(var j in obj["Users"][i]["Events"])
-                        {
-                        displayMap((obj["Users"][i]["Events"][j]["Event"]));
-                        }
-                    }
-                } 
-                                   
-                ,function (errorObject) {console.log("The read failed: " + errorObject.code);}); 
-                    });   
+            hackathonLoc = event;
+            
+            marker.addListener('click', function(){displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
+                markers[i].setMap(null);
+            }});
+            //hackathonLoc.addListener('click', function(){});
+            
+                 
         }                       
         function addDriveLocation(event, address, name, email, desc, date)
         {
@@ -369,7 +354,80 @@
                   tablestr += "</tbody>"
                   table.innerHTML = tablestr;
          },function (errorObject) {console.log("The read failed: " + errorObject.code);}); 
-        
+         showHackathons();
+         function displayMapOfEvent(eventName) {
+                ref.once("value", function(snap) {
+                    var obj = snap.val();
+                    
+                    for(var i in obj["Events"]) {
+                        if(obj["Events"][i]["Event"] == eventName) {
+                            var latLng = new google.maps.LatLng(obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
+                                    
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                position: latLng,
+                                title: eventName,
+                                icon: {
+                                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                                    scale: 5,
+                                    fillColor: 'gold',
+                                    fillOpacity: 1,
+                                }
+                            });
+                            
+                            var contentString = '<div class = "w3-container w3-padding w3-center">' +
+                                '<h2>' + obj["Events"][i]["Event"] + '</h2>'+
+                                '<p>' + obj["Events"][i]["Address"] + '</p>' +
+                                '<p>' + obj["Events"][i]["Month"] + ' ' +
+                                obj["Events"][i]["Day"] + ', ' +
+                                obj["Events"][i]["Year"] + '</p>' +
+                                '</div>';
+    
+                            var info = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+                            
+                            marker.addListener('mouseover', function() {
+                                info.open(map,marker);
+                            });
+                            marker.addListener('mouseout', function() {
+                                info.close(map,marker);
+                            });
+                            
+                            for(var j in obj["Events"][i]) {
+                                var address = obj["Events"][i][j]["Address"];
+                                if(address != null) {
+                                    var latLng = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
+                                    
+                                    var marker = new google.maps.Marker({
+                                        map: map,
+                                        position: latLng,
+                                        title: obj["Events"][i][j]["Name"],
+                                    });
+                                     
+                                    var contentString = '<div class = "w3-container w3-padding w3-center">' +
+                                        '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
+                                        '<p>' + obj["Events"][i][j]["EmailAddress"] + '</p>' +
+                                        '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
+                                        '</div>';
+    
+                                    var info = new google.maps.InfoWindow({
+                                        content: contentString
+                                    });
+                            
+                                    marker.addListener('mouseover', function() {
+                                        info.open(map,marker);
+                                    });
+                                    marker.addListener('mouseout', function() {
+                                        info.close(map,marker);
+                                    });
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+             function showHackathons() {  
          ref.once("value", function(snapshot) {
              var obj = snapshot.val();
          for(var i in obj["Events"]) {
@@ -384,56 +442,21 @@
          
          
          }, function (er) {});
-         function displayMap(eventName) {
-                ref.once("value", function(snap) {
-                    var obj = snap.val();
-                    
-                    for(var i in obj["Events"]) {
-                        if(obj["Events"][i]["Event"] == eventName) {
-                            var latLng = new google.maps.LatLng(obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
-                                    
-                            var marker = new google.maps.Marker({
-                                map: map,
-                                position: latLng,
-                                title: eventName,
-                                icon: {
-                                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                    scale: 5
-                                }
-                            });
-                            for(var j in obj["Events"][i]) {
-                                var address = obj["Events"][i][j]["Address"];
-                                if(address != null) {
-                                    
-                                    var latLng = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
-                                    
-                                    var marker = new google.maps.Marker({
-                                        map: map,
-                                        position: latLng,
-                                        title: obj["Events"][i][j]["Name"]
-                                    });
-                                }
-                                else {
-                                    //alert(address);
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            
+        }
             //return a latLng for address
             function codeAddress(address) {
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         return results[0].geometry.location;
-                        //console.log(address);
+                        console.log(address);
                     } else {
                         alert("Geocode was not successful for the following reason: " + status);
                     }
                 });
             }
+            
+        
 
     </script>
 </body> 
