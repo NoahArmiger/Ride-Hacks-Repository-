@@ -2,6 +2,7 @@
 <html>
     
     <head>
+        <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
         <style type="text/css">
             html, body { height: 100%; margin: 0; padding: 0; }
             #map { height: 50%; }
@@ -11,53 +12,7 @@
     <body>
         <div id="map"></div>
         <script>
-            //Used to login returning users
-            function login(email, password) {
-                mRef.authWithPassword({
-                    email   : email,
-                    password: password
-                }, function(error, authData) {
-                if(error) {
-                    console.log("Login Failed!", error);
-                } else {
-                    console.log("Authenticated successfully with payload:", authData)
-                }
-            });
-                
-            }
             
-            //Used when creating new users
-            function createAccount(email, password, name) {
-                var success = false;
-                mRef.createUser({
-                    email: email,
-                    password: password
-                }, function(error, userData) {
-                    if (error) {
-                        switch (error.code) {
-                            case "EMAIL_TAKEN":
-                                console.log("The new user account cannot be created because the email is already in use.");
-                                break;
-                            case "INVALID_EMAIL":
-                                console.log("The specified email is not a valid email.");
-                                break;
-                            default:
-                                console.log("Error creating user:", error);
-                            }
-                    } else {
-                        console.log("Successfully created user account with uid:", userData.uid);
-                        successCreated();
-                        
-                    }
-                });
-                function successCreated() {
-                    mRef.child("Users").push({
-                        EmailAddress: email,
-                        Name: name
-                    });
-                }
-                
-            }
             
             //Create a map centered on US with some stylers
             function initMap() {
@@ -74,8 +29,8 @@
                 });
             }
             
-            //Take in an event name to put all of its members addresses and its own address on map
-            function displayMap(eventName) {
+            //Take in an event name to put all of its members markers and its own marker on map
+            function displayMapOfEvent(eventName) {
                 mRef.once("value", function(snap) {
                     var obj = snap.val();
                     
@@ -89,23 +44,58 @@
                                 title: eventName,
                                 icon: {
                                     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                    scale: 5
+                                    scale: 5,
+                                    fillColor: 'gold',
+                                    fillOpacity: 1,
                                 }
                             });
+                            
+                            var contentString = '<div class = "w3-container w3-padding w3-center">' +
+                                '<h2>' + obj["Events"][i]["Event"] + '</h2>'+
+                                '<p>' + obj["Events"][i]["Address"] + '</p>' +
+                                '<p>' + obj["Events"][i]["Month"] + ' ' +
+                                obj["Events"][i]["Day"] + ', ' +
+                                obj["Events"][i]["Year"] + '</p>' +
+                                '</div>';
+    
+                            var info = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+                            
+                            marker.addListener('mouseover', function() {
+                                info.open(map,marker);
+                            });
+                            marker.addListener('mouseout', function() {
+                                info.close(map,marker);
+                            });
+                            
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    
                                     var latLng = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
                                     
                                     var marker = new google.maps.Marker({
                                         map: map,
                                         position: latLng,
-                                        title: obj["Events"][i][j]["Name"]
+                                        title: obj["Events"][i][j]["Name"],
                                     });
-                                }
-                                else {
-                                    //alert(address);
+                                     
+                                    var contentString = '<div class = "w3-container w3-padding w3-center">' +
+                                        '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
+                                        '<p>' + obj["Events"][i][j]["EmailAddress"] + '</p>' +
+                                        '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
+                                        '</div>';
+    
+                                    var info = new google.maps.InfoWindow({
+                                        content: contentString
+                                    });
+                            
+                                    marker.addListener('mouseover', function() {
+                                        info.open(map,marker);
+                                    });
+                                    marker.addListener('mouseout', function() {
+                                        info.close(map,marker);
+                                    });
                                 }
                             }
                         }
@@ -132,11 +122,12 @@
             
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
-            displayMap("EagleHacks");
+            displayMapOfEvent("EagleHacks");
         
         </script>
         <script async defer
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPuhAA-CpEQ6g9BuOJxg1tfe5PF9BjmXc&libraries=visualization&callback=initMap">
         </script>
+        <script src="authFunctions.js"></script>
     </body>
 </html>
