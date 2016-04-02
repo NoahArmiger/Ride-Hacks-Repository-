@@ -47,11 +47,13 @@
             <br>
             <br>
         </div>
-        <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+        <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
         <script>
             function doIt() {
                 login(document.getElementById("user"), document.getElementById("pass"));
             }
+            
+            var mRef = new Firebase("https://hackathondrive.firebaseio.com/");
         </script>
         <script src="authFunctions.js"></script>
     </body>
