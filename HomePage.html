@@ -439,7 +439,6 @@ function initMap() {
                                     });
                                     
                                     markerArray[x] = marker1;
-                                    x++;
                                      
                                     contentArray[x] = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
@@ -447,13 +446,12 @@ function initMap() {
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
                                     
-                                   marker1.addListener('mouseover', function() {
+                                    marker1.addListener('mouseover', function() {
                                         var notFound = true;
                                         for(var k; k<1000 && notFound; k++) {
                                             if(markerArray[k] == this) {
                                                 info1.setContent(contentArray[k]);
                                                 notFound = false;
-                                                console.log("Success!");
                                             }
                                         }
                                         info1.open(map,this);
@@ -461,7 +459,7 @@ function initMap() {
                                     marker1.addListener('mouseout', function() {
                                         info1.close(map,this);
                                     });
-                                    
+                                    x++;
                                
                                 }
                             }
