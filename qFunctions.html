@@ -69,13 +69,15 @@
                             });
                             
                             var markerArray = new Array();
+                            var latLngArray = new Array();
+                            var infoArray = new Array();
                             var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
+                                    latLngArray[x] = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
-                                    markerArray[i] = new google.maps.Marker({
+                                    markerArray[x] = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
@@ -87,18 +89,18 @@
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
     
-                                    var info1 = new google.maps.InfoWindow({
+                                    infoArray[x] = new google.maps.InfoWindow({
                                         content: contentString1
                                     });
                             
-                                    markerArray[i].addListener('mouseover', function() {
-                                        info1.open(map,markerArray[i]);
+                                    markerArray[x].addListener('mouseover', function() {
+                                        infoArray[x].open(map,markerArray[x]);
                                     });
-                                    markerArray[i].addListener('mouseout', function() {
-                                        info1.close(map,markerArray[i]);
+                                    markerArray[x].addListener('mouseout', function() {
+                                        infoArray[x].close(map,markerArray[x]);
                                     });
                                     
-                                    i++;
+                                    x++;
                                 }
                             }
                         }
