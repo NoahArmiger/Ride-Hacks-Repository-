@@ -11,7 +11,7 @@ function login(email, password, isNewUser, name) {
             if(isNewUser) {
                 successCreated(email,name,authData);
             } else {
-                window.location.href='homePage.html';
+                window.location.href='HomePage.html';
             }
         }
     });
