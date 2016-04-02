@@ -415,7 +415,7 @@ function initMap() {
             var contentArray = new Array();
             
            function displayMapOfEvent(eventName) {
-                mRef.once("value", function(snap) {
+                ref.once("value", function(snap) {
                     var info1 = new google.maps.InfoWindow();
                     
                     var obj = snap.val();
