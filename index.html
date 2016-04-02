@@ -32,6 +32,7 @@
                         </label>
                     </div>
 	   
+<<<<<<< HEAD
                     <button id = "signIn" class="btn btn-lg btn-primary btn-block" onclick="doIt()">Sign in</button>
                     <br>
                     <button class="btn btn-lg btn-secondary btn-block" onclick="window.location.href='https://noaharmiger.github.io/NewUser'">New User</button>
@@ -56,3 +57,50 @@
         </script>
     </body>
 </html>
+=======
+	        <button id = "signIn" class="btn btn-lg btn-primary btn-block" onclick="doauthorize()">Sign in</button>
+	        <br>
+	        <button class="btn btn-lg btn-secondary btn-block" onclick="window.location.href='https://noaharmiger.github.io/NewUser'">New User</button>
+	</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+<script>
+    function doauthorize(){
+        
+        var ref = new Firebase("https://testfb342016.firebaseio.com");
+        ref.authWithPassword({
+			  "email": $("#user").val(),
+			  "password": $("#pass").val()
+			}, function(error, authData) {
+			  if (error) {
+			    console.log("Login Failed!", error);
+			  } else {
+			  	document.location = "/viewclass"
+			    console.log("Authenticated successfully with payload:", authData);
+			  }
+        });
+    }
+    $(document).ready(function(){
+    
+        console.log("jquery works!");
+        
+        
+        
+    });
+</script>
+</body>
+</html>
+>>>>>>> origin/master
