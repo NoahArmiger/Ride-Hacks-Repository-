@@ -60,7 +60,6 @@
                             var info = new google.maps.InfoWindow({
                                 content: contentString
                             });
-                            console.log(contentString);
 
                             marker.addListener('mouseover', function() {
                                 info.open(map, marker);
@@ -72,14 +71,13 @@
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
+                                    var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
                                     var marker1 = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
                                     });
-                                    console.log(obj["Events"][i][j]["Name"]);
                                      
                                     var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
