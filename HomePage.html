@@ -177,11 +177,11 @@
             if(erStr == "") {
             
                 document.getElementById("er").style.visibility = "hidden";
-               // console.log("DATA: " + ref.getAuth().uid);
-                console.log(hackathonLocEvent + " - " + document.getElementById("pac-input"));
+                console.log("DATA: " + ref.getAuth().uid);
+               // console.log(hackathonLocEvent + " - " + document.getElementById("pac-input"));
                 
-                //var uid = ref.getAuth().uid;
-                uid = "98d79b87-b43d-42a6-b208-a11091b94f22";
+                var uid = ref.getAuth().uid;
+                //uid = "98d79b87-b43d-42a6-b208-a11091b94f22";
             
             ref.once("value", function(snap) {
                 var obj = snap.val();
