@@ -408,7 +408,7 @@
                             });
                             
                             var markerArray = new Array();
-                            var i = 0;
+                            var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
@@ -419,8 +419,6 @@
                                         position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
                                     });
-                                    
-                                    console.out(markerArray[i]);
                                      
                                     var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
