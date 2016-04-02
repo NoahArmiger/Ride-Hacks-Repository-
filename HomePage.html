@@ -414,13 +414,13 @@
                                 if(address != null) {
                                     var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
-                                    markerArray[i] = new google.maps.Marker({
+                                    markerArray[x] = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
                                     });
                                      
-                                     console.log(markerArray[i]);
+                                     //console.log(markerArray[x]);
                                      
                                     var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
@@ -432,11 +432,11 @@
                                         content: contentString1
                                     });
                             
-                                    markerArray[i].addListener('mouseover', function() {
-                                        info1.open(map,markerArray[i]);
+                                    markerArray[x].addListener('mouseover', function() {
+                                        info1.open(map,markerArray[x]);
                                     });
-                                    markerArray[i].addListener('mouseout', function() {
-                                        info1.close(map,markerArray[i]);
+                                    markerArray[x].addListener('mouseout', function() {
+                                        info1.close(map,markerArray[x]);
                                     });
                                     
                                     i++;
