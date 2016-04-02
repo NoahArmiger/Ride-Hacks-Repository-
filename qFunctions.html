@@ -35,7 +35,7 @@
             var contentArray = new Array();
             
             function displayMapOfEvent(eventName) {
-                mRef.once("value", function(snap) {
+                ref.once("value", function(snap) {
                     var info1 = new google.maps.InfoWindow();
                     
                     var obj = snap.val();
@@ -115,9 +115,9 @@
                         }
                     }
                 });
-                var uid = mRef.getAuth().uid;
+                var uid = ref.getAuth().uid;
 
-                mRef.once("value", function(snap) {
+                ref.once("value", function(snap) {
                     var obj = snap.val();
 
                     for(var i in obj["Users"]) {
@@ -173,8 +173,8 @@
                 });
             }
             
-            //var mRef = new Firebase("https://glaring-inferno-647.firebaseio.com/");
-            var mRef = new Firebase("https://hackathondrive.firebaseio.com/");
+            //var ref = new Firebase("https://glaring-inferno-647.firebaseio.com/");
+            var ref = new Firebase("https://hackathondrive.firebaseio.com/");
             var map;
             var hackathonLoc;
             
@@ -184,11 +184,11 @@
             
             /*
             { //Code for Joe: given userID, get name and email address
-                var uid = mRef.getAuth().uid;
+                var uid = ref.getAuth().uid;
 
                 var name;
                 var email;
-                mRef.once("value", function(snap) {
+                ref.once("value", function(snap) {
                     var obj = snap.val();
 
                     for(var i in obj["Users"]) {
