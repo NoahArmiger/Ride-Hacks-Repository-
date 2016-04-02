@@ -231,8 +231,8 @@ function selectButton(btn) {
 function initMap() {
     console.log("Init");
     ref = new Firebase("https://hackathondrive.firebaseio.com/")
-    //uid = ref.getAuth().uid;
-    uid = "98d79b87-b43d-42a6-b208-a11091b94f22";      
+    uid = ref.getAuth().uid;
+    //uid = "98d79b87-b43d-42a6-b208-a11091b94f22";      
     geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.887, lng: -96.437},
