@@ -1,5 +1,5 @@
 //Used to login returning users
-function login(email, password) {
+function login(email, password, isNewUser, name) {
     mRef.authWithPassword({
         email   : email,
         password: password
@@ -8,6 +8,9 @@ function login(email, password) {
             console.log("Login Failed!", error);
         } else {
             console.log("Authenticated successfully with payload:", authData)
+            if(isNewUser) {
+                successCreated(email,name,authData);
+            }
         }
     });
 }
@@ -32,16 +35,16 @@ function createAccount(email, password, name) {
             }
         } else {
             console.log("Successfully created user account with uid:", userData.uid);
-            successCreated();
+            login(email,password,true,name);
             
         }
     });
-    function successCreated() {
-        login(email,password);
-        mRef.child("Users").push({
-            EmailAddress: email,
-            Name: name,
-            UserID: mRef.getAuth().uid
-        });
-    }
+}
+
+function successCreated(email, name, authData) {
+    mRef.child("Users").push({
+        EmailAddress: email,
+        Name: name,
+        UserID: authData.uid
+    });
 }
