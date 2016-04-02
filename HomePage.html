@@ -67,7 +67,7 @@
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 </head>
 <body> 
-<header class = "w3-container w3-grey">
+<header class = "w3-container w3-blue">
 <h1 align = "center">Ride Hacks </h1>
     </header> 
 <br>
@@ -79,7 +79,7 @@
    <div class="container">
        <br>
      
-  <h2 align = "center">Your Events</h2>
+  <h2 align = "center">View Your Events</h2>
        <br> 
   <p>Click on an event to see more information</p>            
   <table id = "tableEvents" class="table table-hover">
@@ -112,23 +112,66 @@
     <br> 
     <div class= "w3-center"> 
     <!--<button class =  "w3-btn w3-blue w3-hover-yellow w3-round ">New Event</button>-->
+        <br>
+        <br>
+        <div class = "w3-container w3-blue ">
         <h3>or, add an event below</h3>
-    
-        </div> 
-<br> 
+    </div>
     <br>
-    
+        <br>
+        
+    </div>
+    <div class="container">
+        <table id = "tableEvents" class="table table-hover">
+    <thead>
+      <tr>
+          <th>Event</th>
+        <th>Location</th>
+          <th>Dates</th>
+      </tr> 
+    </thead>
+    <tbody>
+      <tr>
+        <td>TribeHacks</td>
+        <td>WM</td>
+        <td>4/1/2016</td>
+        </tr>
+            </tbody>
+    </table> 
+        <br>    
+        <br>    
+    </div>
+    <div class = "w3-center">
            <!--<h1 align = "center">Put Something With a map here? </h1>-->
     <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
-   
+    <br>
     <div style = "visibility:hidden" id="map"></div>
+   <br>
+        <button class= "w3-btn w3-blue w3-rounder w3-hover-white w3-center" >Submit </button>
+    </div>
+    <br>
+    <br>
+
+        <h1 align ="center">The map goes here</h1>
+<br>
     <br>
     <br>
     <br>
-    <div class="w3-container w3-leftbar w3-light-grey">
+        <div class="w3-container w3-center ">
+  <h3>Are you driving,or looking for a ride?</h3>
+            
+  <button class="w3-btn w3-blue w3-round w3-hover-white">   Driving!    </button>
+          
+  <button class="w3-btn w3-blue w3-round w3-hover-white">Looking for a ride</button>
+    <br>
+            <br>
+</div>
+
+    <div class="w3-container w3-leftbar w3-light-grey w3-center ">
   <p><i>"Now This is pod Racing ."</i></p>
   <p>Joe B</p>
 </div> 
+
     
     <script>
       // This example requires the Places library. Include the libraries=places
