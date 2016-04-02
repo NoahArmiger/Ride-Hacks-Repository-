@@ -47,4 +47,5 @@ function successCreated(email, name, authData) {
         Name: name,
         UserID: authData.uid
     });
+    window.location.href='HomePage.html';
 }
