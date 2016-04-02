@@ -122,7 +122,25 @@
             
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
-            displayMapOfEvent("EagleHacks");
+            //displayMapOfEvent("EagleHacks");
+            
+            { //Code for Joe: given userID, get name and email address
+                var uid = mRef.getAuth().uid;
+
+                var name;
+                var email;
+                mRef.once("value", function(snap) {
+                    var obj = snap.val();
+
+                    for(var i in obj["Users"]) {
+                        if(obj["Users"][i]["UserID"] == uid) {
+                            name = obj["Users"][i]["Name"];
+                            email = obj["Users"][i]["EmailAddress"];
+                        }
+
+                    }
+                });
+            }
         
         </script>
         <script async defer
