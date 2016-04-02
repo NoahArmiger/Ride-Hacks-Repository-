@@ -1,43 +1,398 @@
 <!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
+<head>
+     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<style>
+		 html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 60%;
+          left: 0%;
+          width:100%;
+          top:0%;
+      }
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 300px;
+      }
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+      .pac-container {
+        font-family: Roboto;
+      }
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+        .center-this {
+			float: none;
+			margin: 0 auto;
+		}
+        
+	</style>
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+</head>
+<body> 
+<header class = "w3-container w3-blue">
+<h1 align = "center">rideHacks </h1>
+    </header> 
+<br>
+
+
+   
+   <br> 
     
-    <head>
-        <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
-        <style type="text/css">
-            html, body { height: 100%; margin: 0; padding: 0; }
-            #map { height: 50%; }
-        </style>
-        <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
-    </head>
-    <body>
-        <div id="map"></div>
-        <script>
-            
-            
-            //Create a map centered on US with some stylers
-            function initMap() {
-                map = new google.maps.Map(document.getElementById('map'), {
-                    center: {lat: 39.887, lng: -96.437},
-                    zoom: 5,
-                    styles: [{
-                        featureType: 'poi',
-                        stylers: [{ visibility: 'off' }]  // Turn off points of interest.
-                    }, {
-                        featureType: 'transit.station',
-                        stylers: [{ visibility: 'off' }]  // Turn off bus stations, train stations, etc.
-                    }]
-                });
+   <div class="container">
+       <br>
+     
+  <h2 align = "center">View Your Events</h2>
+       <br> 
+  <p>Click on an event to see more information</p>            
+  <table id = "tableEvents" class="table table-hover">
+    <thead>
+      <tr>
+          <th>Event</th>
+        <th>Location</th>
+          <th>Dates</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>TribeHacks</td>
+        <td>WM</td>
+        <td>4/1/2016</td>
+      </tr>
+      <tr>
+        <td>HackUMBC</td>
+        <td>UMBC</td>
+        <td>Ended</td>
+      </tr>
+      <tr>
+        <td>BitCamp</td>
+        <td>The Evil Empire</td>
+        <td>Never</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class = "w3-center">
+    <nav class="w3-btn w3-blue">
+  <ul class="nav navbar-nav">
+    <li><a class = "w3-hover-blue" onclick = "showHackathons()" a href="#map"> Show All Events</a></li>
+  
+</nav>
+</div>
+      <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
+    <br>
+    <div  id="map"></div>
+    
+    <div class= "w3-center"> 
+      
+        <div class = "w3-container w3-blue ">
+        <h3>Are you <button class="w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white" id = 'Driving' onclick = "selectButton('Driving')">   Offering to Drive    </button> or 
+          
+  <button class="w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white" id = 'l4' onclick = "selectButton('l4')">Looking for a ride</button></h3>
+    </div>
+
+        
+    </div>
+    <div class="container">
+    
+    </div>
+          
+    <div class = "w3-center">
+          <div id = 'er' style = "visibility: hidden" class="alert alert-danger" role="alert">
+  <strong>Error!</strong> Change a few things up and try submitting again.
+</div>
+        <button class= "w3-btn w3-blue w3-rounder w3-round w3-hover-white w3-center" onClick = "verifyPin()">Add pin </button>
+       
+    </div>
+   <br><br>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+     <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPuhAA-CpEQ6g9BuOJxg1tfe5PF9BjmXc&libraries=places&callback=initMap"
+        async defer></script>
+    <script>
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+var ref;
+var geocoder;
+var map;
+var hackathonLoc;
+var uid;
+var hackathonLocEvent;
+var curloc;
+var hackDate;
+var pos;
+var mIndex = 0;
+var muIndex = 0;
+var markers = new Array();
+var userMarkers = new Array();
+var selectedBTN;
+var markerToAdd;
+var selectedHackathon = false;
+function verifyPin() {
+    var erStr = "";
+    if(!(selectedBTN == "l4" || selectedBTN == "Driving")) 
+    {
+        erStr += "Select if you are driving or looking for a driver<br>";
+    }
+    if(document.getElementById("pac-input").value == "") {
+        erStr +="Please add your location<br>";
+    }
+    if(hackathonLoc == "" || hackathonLoc == undefined) {
+        erStr += "Please select the desired hackathon from the map";
+    }
+    if(erStr != "") {
+        document.getElementById("er").style.visibility = "visible";
+        document.getElementById("er").innerHTML = "<strong>Error!</strong><br>" + erStr;
+    }
+    if(erStr == "") {
+        document.getElementById("er").style.visibility = "hidden";
+        ref.once("value", function(snap) {
+            var obj = snap.val();
+            console.log(obj);
+            for(var i in obj["Users"]) {
+                console.log("A" + obj["Users"][i]);
+                if(obj["Users"][i]["UserID"] == uid) {
+                	console.log(obj["Users"][i]);
+                    console.log(obj["Users"][i]["Name"]);
+                    name = obj["Users"][i]["Name"];
+                    email = obj["Users"][i]["EmailAddress"];
+                    addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), hackDate, pos);
+                    break;
+                }
             }
+        });
+        
+    }
+}
+function selectButton(btn) {
+    if(selectedBTN == btn) {
+        selectedBTN = "";
+        document.getElementById(btn).className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+    }
+    else if(selectedBTN != "")   {
+            if(selectedBTN == 'l4') {
+                selectedBTN = btn;
+                document.getElementById('l4').className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+                document.getElementById(btn).className =  'w3-btn w3-white w3-round w3-hover-white';
+            }
+            else {
+                selectedBTN = btn;
+                document.getElementById('Driving').className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+                document.getElementById(btn).className =  'w3-btn w3-white w3-round w3-hover-white';
+            }
+    }
+    else {
+        selectedBTN = btn;
+        document.getElementById(btn).className = 'w3-btn w3-white w3-round w3-hover-white';
+    }
+    console.log(selectedBTN);
+}
+function initMap() {
+    console.log("Init");
+    ref = new Firebase("https://hackathondrive.firebaseio.com/")
+    //uid = ref.getAuth().uid;
+    uid = "98d79b87-b43d-42a6-b208-a11091b94f22";      
+    geocoder = new google.maps.Geocoder();
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 39.887, lng: -96.437},
+        zoom: 4,
+        streetViewControl: false
+    });
+    var input = /** @type {!HTMLInputElement} */(document.getElementById('pac-input'));
+    var types = document.getElementById('type-selector');
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo('bounds', map);
+    document.getElementById("pac-input").style.visibility = "visible";
+               
+                        //autocomplete.addListener('place_changed', function() {
+          //infowindow.close();
+               
+    var infowindow = new google.maps.InfoWindow();
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);  
+    autocomplete.bindTo('bounds', map);
+    console.log("Input:" + autocomplete + " " + input);
+    var pinColor = "00FF00";
+    var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+        new google.maps.Size(71, 71),
+        new google.maps.Point(0,0),
+        new google.maps.Point(17, 34));
+        
+                var marker = new google.maps.Marker({
+                    map: map,
+                    anchorPoint: new google.maps.Point(0, -29),
+                    icon: pinImage
+                });
+                autocomplete.addListener('place_changed', function() {
+          marker.setVisible(false);
+          var place = autocomplete.getPlace();
+          
+          marker.setPosition(place.geometry.location);
+          pos = place.geometry.location;
+          marker.setVisible(true);
+    
+          var address = '';
+          if (place.address_components) {
+            address = [
+              (place.address_components[0] && place.address_components[0].short_name || ''),
+              (place.address_components[1] && place.address_components[1].short_name || ''),
+              (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');
+          }
+                     infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+          infowindow.open(map, marker); 
+            });
+         
+          markerToAdd = marker;
+}   
+        function addHackathonMarker(event, address, lat, lng, date) {
+            // console.log("IN"); 
+                var marker = new google.maps.Marker({position: {lat: lat, lng: lng}, map: map });
+                markers[mIndex] = marker;
+                mIndex++;
+              //  console.log(mIndex);
             
-            //Take in an event name to put all of its members markers and its own marker on map
+                
+       
+            
+            marker.addListener('click', function(){ hackathonLocEvent = event; hackDate = date; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
+                markers[i].setMap(null);
+            }});
+            //hackathonLoc.addListener('click', function(){});
+            
+                 
+        }                       
+        function addDriveLocation(event, address, name, email, desc, date,posit)
+        {
+            
+            console.log('entered');
+             ref.once("value", function(snapshot) {
+                // alert('2');
+               // console.log(snapshot.val());
+                // alert('3');
+                 var obj = snapshot.val();
+                // console.log('4');
+            //add driver/l4 to individual event
+                for(var i in obj["Events"]) {      
+                    //console.log(obj["Events"][i]["EventName"] + " - " + event + " - aaaaa" + i);
+                
+                if(obj["Events"][i]["Event"] == event) {
+                    //console.log("IN");
+                    console.log(date);
+                    ref.child("Events").child(i).push({Day: date.day, Month: date.month, Year: date.year, Address: address, Driving: desc, Email: email, Name: name, lat: posit.lat(), lng: posit.lng()});
+                }
+            }
+            //add driver/l4 event to individual list
+            for(var i in obj["Users"]) {
+                if(obj["Users"][i]["EmailAddress"] == email) {
+                    ref.child("Users").child(i).child("Events").push({Day: date.day, Month: date.month, Year: date.year, lat: posit.lat(), lng: posit.lng(), Address: address, Driving: desc, Event: event});
+                }
+            }
+         },function (errorObject) {console.log("The read failed: " + errorObject.code);});  
+        }
+          
+      ref = new Firebase("https://hackathondrive.firebaseio.com/");
+        
+      //function generateTable(email) {
+        var email = "EmailAddress";
+        var name;
+
+        ref.once("value", function(snap) {
+                var obj = snap.val();
+                console.log(obj);
+                for(var i in obj["Users"]) {
+                    console.log("A" + obj["Users"][i]);
+                    if(obj["Users"][i]["UserID"] == uid) {
+                    	console.log(obj["Users"][i]);
+                        console.log(obj["Users"][i]["Name"]);
+                        name = obj["Users"][i]["Name"];
+                        email = obj["Users"][i]["EmailAddress"];
+                        var table = document.getElementById("tableEvents");
+        
+          var tablestr = "<thead><tr><th>Event</th>        <th>Location</th><th>Dates</th></tr></thead><tbody>";
+              ref.once("value", function(snapshot) {
+                
+            //console.log(snapshot.val());
+               
+            var obj = snapshot.val();
+             
+          console.log("AAAAAAAAAAAAAAAAAA");
+            console.log(obj);
+            for(var i in obj["Users"]) {
+                console.log("i: " + i + "email:" + obj["Users"][i]["EmailAddress"] + " - " + email);
+                if(obj["Users"][i]["EmailAddress"] == email) {
+                    console.log("BBBB");
+                    
+                    console.log(email);
+                    console.log(obj["Users"][i]);
+                    for(var j in obj["Users"][i]["Events"])
+                        {
+                            console.log("j: " + j);
+                            var address = obj["Users"][i]["Events"][j]["Address"];
+                            var Event = obj["Users"][i]["Events"][j]["Event"];
+                            var year = obj["Users"][i]["Events"][j]["Year"];
+                            var day = obj["Users"][i]["Events"][j]["Day"];
+                            var month = obj["Users"][i]["Events"][j]["Month"];
+                            tablestr += "<tr><td>" + Event + " - " + year  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
+                        }
+                }
+             
+            }
+                  console.log("TBLSTR: " + tablestr);
+                  tablestr += "</tbody>"
+                  table.innerHTML = tablestr;
+                  
+         },function (errorObject) {console.log("The read failed: " + errorObject.code);}); 
+                        
+                    }
+                }
+            });
+       
+          
+         showHackathons();
+         //Take in an event name to put all of its members markers and its own marker on map
             function displayMapOfEvent(eventName) {
-                mRef.once("value", function(snap) {
+                ref.once("value", function(snap) {
                     var obj = snap.val();
                     
                     for(var i in obj["Events"]) {
                         if(obj["Events"][i]["Event"] == eventName) {
                             var latLng = new google.maps.LatLng(obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
-
                             var marker = new google.maps.Marker({
                                 map: map,
                                 position: latLng,
@@ -51,16 +406,14 @@
                             });
                             
                             hackathonLoc = marker;
-
                             var contentString = '<div class = "w3-container w3-padding w3-center">' +
                                 '<h2>' + obj["Events"][i]["Event"] + '</h2>' +
                                 '<p>' + obj["Events"][i]["Address"] + '</p>' + '<p>' + obj["Events"][i]["Month"] + ' ' + obj["Events"][i]["Day"] + ', ' + obj["Events"][i]["Year"] + '</p>' +
                                 '</div>';
-
                             var info = new google.maps.InfoWindow({
                                 content: contentString
                             });
-
+                            console.log(contentString);
                             marker.addListener('mouseover', function() {
                                 info.open(map, marker);
                             });
@@ -68,18 +421,15 @@
                                 info.close(map, marker);
                             });
                             
-                            var markerArray = new Array();
-                            var infoArray = new Array();
-                            var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
+                                    var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
                                     
-                                    markerArray[x] = new google.maps.Marker({
+                                    var marker1 = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
-                                        title: obj["Events"][i][j]["Name"],
+                                        title: obj["Events"][i][j]["Name"]
                                     });
                                      
                                     var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
@@ -88,71 +438,56 @@
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
     
-                                    infoArray[x] = new google.maps.InfoWindow({
-                                        content: contentString1
+                                    var info1 = new google.maps.InfoWindow({
+                                        content: contentString
                                     });
                             
-                                    markerArray[x].addListener('mouseover', function() {
-                                        (infoArray[x]).open(map,markerArray[x]);
+                                    marker1.addListener('mouseover', function() {
+                                        info1.open(map,marker1);
                                     });
-                                    markerArray[x].addListener('mouseout', function() {
-                                        (infoArray[x]).close(map,markerArray[x]);
+                                    marker1.addListener('mouseout', function() {
+                                        info1.close(map,marker1);
                                     });
-                                    
-                                    x++;
                                 }
                             }
                         }
                     }
                 });
             }
-            
+             function showHackathons() {
+                 if(hackathonLoc != null) { hackathonLoc.setMap(null); }
+         ref.once("value", function(snapshot) {
+             var obj = snapshot.val();
+         for(var i in obj["Events"]) {
+            // console.log(obj["Events"][i]["Address"] + " - " + obj["Events"][i]["Lat"] + " - " + obj["Events"][i]["Lng"]);
+             if((obj["Events"][i]["Lat"]) != undefined && (obj["Events"][i]["Lng"]) != undefined) {
+                 var date = {
+                     year: obj["Events"][i]["Year"],
+                     month: obj["Events"][i]["Month"],
+                     day: obj["Events"][i]["Day"]
+                 }
+                 
+            addHackathonMarker(obj["Events"][i]["Event"], obj["Events"][i]["Address"],obj["Events"][i]["Lat"], obj["Events"][i]["Lng"], date);
+             }
+         }
+         
+         
+         }, function (er) {});
+        }
             //return a latLng for address
             function codeAddress(address) {
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         return results[0].geometry.location;
-                        console.log(address);
+                       
                     } else {
                         alert("Geocode was not successful for the following reason: " + status);
                     }
                 });
             }
             
-            //var mRef = new Firebase("https://glaring-inferno-647.firebaseio.com/");
-            var mRef = new Firebase("https://hackathondrive.firebaseio.com/");
-            var map;
-            var hackathonLoc;
-            
-            //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
-            //login('qhuyett1@umbc.edu', 'easy123');
-            displayMapOfEvent("EagleHacks");
-            
-            /*
-            { //Code for Joe: given userID, get name and email address
-                var uid = mRef.getAuth().uid;
-
-                var name;
-                var email;
-                mRef.once("value", function(snap) {
-                    var obj = snap.val();
-
-                    for(var i in obj["Users"]) {
-                        if(obj["Users"][i]["UserID"] == uid) {
-                            name = obj["Users"][i]["Name"];
-                            email = obj["Users"][i]["EmailAddress"];
-                        }
-
-                    }
-                });
-            }
-            */
         
-        </script>
-        <script async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPuhAA-CpEQ6g9BuOJxg1tfe5PF9BjmXc&libraries=visualization&callback=initMap">
-        </script>
-        <script src="authFunctions.js"></script>
-    </body>
-</html>
+    </script>
+</body> 
+</html> 
