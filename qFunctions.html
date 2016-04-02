@@ -97,12 +97,12 @@
                                         '</div>';
                                     
                                     marker1.addListener('mouseover', function() {
-                                        var x;
-                                        for(var i in markerArray) {
-                                            if(i == this) {
+                                        var notFound = true;
+                                        for(var x; x<1000 && notFound; x++) {
+                                            if(markerArray[x] == this) {
                                                 info1.setContent(contentArray[x]);
+                                                notFound = false;
                                             }
-                                            x++;
                                         }
                                         info1.open(map,this);
                                     });
