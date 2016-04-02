@@ -387,7 +387,7 @@ function initMap() {
          showHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
                 var markerArray = new Array();
-                var contentArray = new Array();
+            var contentArray = new Array();
             
             function displayMapOfEvent(eventName) {
                 ref.once("value", function(snap) {
@@ -448,11 +448,12 @@ function initMap() {
                                         '</div>';
                                     
                                     marker1.addListener('mouseover', function() {
+                                        var x;
                                         for(var i in markerArray) {
                                             if(i == this) {
-                                                info1.setContent(contentArray[i]);
+                                                info1.setContent(contentArray[x]);
                                             }
-                                            i++;
+                                            x++;
                                         }
                                         info1.open(map,this);
                                     });
