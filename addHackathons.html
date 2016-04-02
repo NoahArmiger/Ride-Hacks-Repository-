@@ -76,7 +76,7 @@
    
    <br> 
     
- 
+   
     <br> 
     <div class= "w3-center"> 
     <!--<button class =  "w3-btn w3-blue w3-hover-yellow w3-round ">New Event</button>-->
@@ -93,6 +93,8 @@
     <input class = "w3-input" id = "month" type = "text" placeholder = "month"> 
     <input class = "w3-input" id = "year" type = "text" placeholder = "year">
     <input class = "w3-input" id = "name" type = "text" placeholder = "HACKATHON NAME">
+     <input class = "w3-input" id = "Lat" type = "text" placeholder = "lat">
+      <input class = "w3-input" id = "Lng" type = "text" placeholder = "lng">
     </form>
     <div style = "visibility:hidden" id="map"></div>
     <br>
@@ -177,10 +179,10 @@
           infowindow.open(map, marker);
         });
 
-        function addDriveLocation(address, name, day, month, year)
+        function addDriveLocation(address, name, day, month, year,lat,lng)
         {
             
-            ref.child("Events").push({Address: address, Event: name, Day: day, Month: month, Year: year});
+            ref.child("Events").push({Address: address, Event: name, Day: day, Month: month, Year: year Lat:lat Lng:lng});
             alert('added');
             console.log('entered');
              
