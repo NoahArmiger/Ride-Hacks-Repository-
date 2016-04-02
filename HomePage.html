@@ -186,12 +186,10 @@ function verifyPin() {
         document.getElementById("er").style.visibility = "hidden";
         ref.once("value", function(snap) {
             var obj = snap.val();
-            console.log(obj);
+           
             for(var i in obj["Users"]) {
-                console.log("A" + obj["Users"][i]);
+             
                 if(obj["Users"][i]["UserID"] == uid) {
-                	console.log(obj["Users"][i]);
-                    console.log(obj["Users"][i]["Name"]);
                     name = obj["Users"][i]["Name"];
                     email = obj["Users"][i]["EmailAddress"];
                     addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), hackDate, pos);
@@ -226,13 +224,12 @@ function selectButton(btn) {
         selectedBTN = btn;
         document.getElementById(btn).className = 'w3-btn w3-white w3-round w3-hover-white';
     }
-    console.log(selectedBTN);
+
 }
 function initMap() {
-    console.log("Init");
     ref = new Firebase("https://hackathondrive.firebaseio.com/")
-    uid = ref.getAuth().uid;
-    //uid = "98d79b87-b43d-42a6-b208-a11091b94f22";      
+    //uid = ref.getAuth().uid;
+    uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
     geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.887, lng: -96.437},
@@ -254,7 +251,7 @@ function initMap() {
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);  
     autocomplete.bindTo('bounds', map);
-    console.log("Input:" + autocomplete + " " + input);
+    
     var pinColor = "00FF00";
     var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
         new google.maps.Size(71, 71),
@@ -289,15 +286,13 @@ function initMap() {
           markerToAdd = marker;
 }   
         function addHackathonMarker(event, address, lat, lng, date) {
-            // console.log("IN"); 
+
                 var marker = new google.maps.Marker({position: {lat: lat, lng: lng}, map: map });
                 markers[mIndex] = marker;
                 mIndex++;
-              //  console.log(mIndex);
+
                var infowindow =  new google.maps.InfoWindow({ content: "TEST"});
-                console.log(infowindow);
-            console.log(address);
-            console.log("ZZZZZZZZZZZZ");
+
                
 
        
@@ -305,7 +300,7 @@ function initMap() {
             marker.addListener('click', function(){ hackathonLocEvent = event; hackDate = date; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
                 markers[i].setMap(null);
                 
-            }markers = {}; mIndex = 0;});
+            }});
             marker.addListener('mouseover', function(){
                 
              infowindow.setContent(event + "<br>" + address + "<br>" + date.month + " " + date.day + ", " + date.year);
@@ -323,21 +318,16 @@ function initMap() {
         }                       
         function addDriveLocation(event, address, name, email, desc, date,posit)
         {
-            
-            console.log('entered');
+
              ref.once("value", function(snapshot) {
-                // alert('2');
-               // console.log(snapshot.val());
-                // alert('3');
+
                  var obj = snapshot.val();
-                // console.log('4');
+
             //add driver/l4 to individual event
                 for(var i in obj["Events"]) {      
-                    //console.log(obj["Events"][i]["EventName"] + " - " + event + " - aaaaa" + i);
-                
+
                 if(obj["Events"][i]["Event"] == event) {
-                    //console.log("IN");
-                   // console.log(date);
+
                     ref.child("Events").child(i).push({Day: date.day, Month: date.month, Year: date.year, Address: address, Driving: desc, Email: email, Name: name, lat: posit.lat(), lng: posit.lng()});
                 }
             }
@@ -355,15 +345,15 @@ function initMap() {
       //function generateTable(email) {
         var email = "EmailAddress";
         var name;
-
+        console.log("ASDPOIGHDPOISH TABLE GENERATOR");
         ref.once("value", function(snap) {
                 var obj = snap.val();
-               // console.log(obj);
+                console.log(obj);
                 for(var i in obj["Users"]) {
-                  //  console.log("A" + obj["Users"][i]);
+                    console.log("A" + obj["Users"][i]);
                     if(obj["Users"][i]["UserID"] == uid) {
-                    	//console.log(obj["Users"][i]);
-                      //  console.log(obj["Users"][i]["Name"]);
+                    	console.log(obj["Users"][i]);
+                      console.log(obj["Users"][i]["Name"]);
                         name = obj["Users"][i]["Name"];
                         email = obj["Users"][i]["EmailAddress"];
                         var table = document.getElementById("tableEvents");
@@ -371,22 +361,20 @@ function initMap() {
           var tablestr = "<thead><tr><th>Event</th>        <th>Location</th><th>Dates</th></tr></thead><tbody>";
               ref.once("value", function(snapshot) {
                 
-            //console.log(snapshot.val());
+
                
             var obj = snapshot.val();
-             
-          //console.log("AAAAAAAAAAAAAAAAAA");
-            //console.log(obj);
+
             for(var i in obj["Users"]) {
-               // console.log("i: " + i + "email:" + obj["Users"][i]["EmailAddress"] + " - " + email);
+                console.log("i: " + i + "email:" + obj["Users"][i]["EmailAddress"] + " - " + email);
                 if(obj["Users"][i]["EmailAddress"] == email) {
-                   // console.log("BBBB");
+                    console.log("BBBB");
                     
-                   // console.log(email);
-                   // console.log(obj["Users"][i]);
+                    console.log(email);
+                    console.log(obj["Users"][i]);
                     for(var j in obj["Users"][i]["Events"])
                         {
-                           // console.log("j: " + j);
+                            console.log("j: " + j);
                             var address = obj["Users"][i]["Events"][j]["Address"];
                             var Event = obj["Users"][i]["Events"][j]["Event"];
                             var year = obj["Users"][i]["Events"][j]["Year"];
@@ -407,13 +395,26 @@ function initMap() {
                 }
             });
        
-          
-         showYourHackathons();
+          function clearMarkerArray() {
+             try {
+              
+              for(var i = 0; i < markerArray.length;i++) {
+                  markerArray[i].setMap(null);
+              }
+                 /*for(var i = 0; i < markers.length;i++) {
+                  markers[i].setMap(null);
+              }
+                 markers = new Array();
+                 mIndex = 0;*/
+             }
+              catch(e) {}
+          }
+         showHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
              var markerArray = new Array();
             var contentArray = new Array();
             
-            function displayMapOfEvent(eventName) {
+           function displayMapOfEvent(eventName) {
                 ref.once("value", function(snap) {
                     var info1 = new google.maps.InfoWindow();
                     
@@ -454,7 +455,7 @@ function initMap() {
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
+                                    latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
                                     var marker1 = new google.maps.Marker({
                                         map: map,
@@ -490,47 +491,10 @@ function initMap() {
                         }
                     }
                 });
-                var uid = ref.getAuth().uid;
-                ref.once("value", function(snap) {
-                    var obj = snap.val();
-                    for(var i in obj["Users"]) {
-                        if(obj["Users"][i]["UserID"] == uid) {
-                            for(var j in obj["Users"][i]["Events"]) {
-                                if(obj["Users"][i]["Events"][j]["Event"] == eventName) {
-                                    var latLng = new google.maps.LatLng(obj["Users"][i]["Events"][j]["lat"], obj["Users"][i]["Events"][j]["lng"]);
-                                    
-                                    var marker = new google.maps.Marker({
-                                        map: map,
-                                        position: latLng,
-                                        title: eventName,
-                                        icon: {
-                                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                            scale: 5,
-                                            fillColor: 'green',
-                                            fillOpacity: 1
-                                        }
-                                    });
-                                    
-                                    var contentString = '<div class = "w3-container w3-padding w3-center">' +
-                                        '<p>' + 'You' + '</p>' +
-                                        '<p>' + obj["Users"][i]["Events"][j]["Address"] +'</p>' +
-                                        '</div>';
-                                    var info = new google.maps.InfoWindow({
-                                        content: contentString
-                                    });
-                                    marker.addListener('mouseover', function() {
-                                        info.open(map, this);
-                                    });
-                                    marker.addListener('mouseout', function() {
-                                        info.close(map, this);
-                                    });
-                                }
-                            }
-                        }
-                    }
-                });
             }
              function showHackathons() {
+                 clearMarkerArray();
+                 console.log("Aasfd");
                  //hackathonLoc.setMap(null);
                  if(hackathonLoc != null) { hackathonLoc.setMap(null); }
          ref.once("value", function(snapshot) {
@@ -552,8 +516,8 @@ function initMap() {
          }, function (er) {});
         }
         
-        function showYourHackathons() {
-            
+        /*function showYourHackathons() {
+            clearMarkerArray();
                  //hackathonLoc.setMap(null);
                  if(hackathonLoc != null) { hackathonLoc.setMap(null); }
          ref.once("value", function(snapshot) {
@@ -563,9 +527,7 @@ function initMap() {
              
              if(obj["Users"][i]["UserID"] == uid){
              for(var j in obj["Users"][i]["Events"]){
-                 console.log("AAAAAAAAAAA");
-             console.log(obj);
-                 console.log(obj["Users"][i]["Events"][j]);
+                \
                  var date = {
                      year: obj["Users"][i]["Events"][j]["Year"],
                      month: obj["Users"][i]["Events"][j]["Month"],
@@ -581,7 +543,7 @@ function initMap() {
          
          
          }, function (er) {});
-        }
+        }*/
         
             //return a latLng for address
             function codeAddress(address) {
