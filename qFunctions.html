@@ -69,7 +69,6 @@
                             });
                             
                             var markerArray = new Array();
-                            var infoArray = new Array();
                             var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
@@ -88,15 +87,15 @@
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
     
-                                    infoArray[x] = new google.maps.InfoWindow({
+                                    markerArray[x].info = new google.maps.InfoWindow({
                                         content: contentString1
                                     });
                             
                                     markerArray[x].addListener('mouseover', function() {
-                                        (infoArray[x]).open(map,markerArray[x]);
+                                        markerArray[x].info.open(map,markerArray[x]);
                                     });
                                     markerArray[x].addListener('mouseout', function() {
-                                        (infoArray[x]).close(map,markerArray[x]);
+                                        markerArray[x].info.close(map,markerArray[x]);
                                     });
                                     
                                     x++;
