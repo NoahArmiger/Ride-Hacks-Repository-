@@ -449,10 +449,11 @@ function initMap() {
                                     
                                    marker1.addListener('mouseover', function() {
                                         var notFound = true;
-                                        for(var j; j<1000 && notFound; j++) {
-                                            if(markerArray[j] == this) {
-                                                info1.setContent(contentArray[j]);
+                                        for(var k; k<1000 && notFound; k++) {
+                                            if(markerArray[k] == this) {
+                                                info1.setContent(contentArray[k]);
                                                 notFound = false;
+                                                console.log("Success!");
                                             }
                                         }
                                         info1.open(map,this);
