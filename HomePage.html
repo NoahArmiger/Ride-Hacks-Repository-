@@ -448,7 +448,7 @@ function initMap() {
     
                                     markerArray[x].addListener('mouseover', function() {
                                         info = new google.maps.InfoWindow({
-                                            content: contentArray[x];
+                                            content: contentArray[x]
                                         });
                                         info.open(map,markerArray[x]);
                                     });
