@@ -37,7 +37,7 @@
                     for(var i in obj["Events"]) {
                         if(obj["Events"][i]["Event"] == eventName) {
                             var latLng = new google.maps.LatLng(obj["Events"][i]["Lat"], obj["Events"][i]["Lng"]);
-                                    
+
                             var marker = new google.maps.Marker({
                                 map: map,
                                 position: latLng,
@@ -46,55 +46,53 @@
                                     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                                     scale: 5,
                                     fillColor: 'gold',
-                                    fillOpacity: 1,
+                                    fillOpacity: 1
                                 }
                             });
-                            
+
                             var contentString = '<div class = "w3-container w3-padding w3-center">' +
-                                '<h2>' + obj["Events"][i]["Event"] + '</h2>'+
-                                '<p>' + obj["Events"][i]["Address"] + '</p>' +
-                                '<p>' + obj["Events"][i]["Month"] + ' ' +
-                                obj["Events"][i]["Day"] + ', ' +
-                                obj["Events"][i]["Year"] + '</p>' +
+                                '<h2>' + obj["Events"][i]["Event"] + '</h2>' +
+                                '<p>' + obj["Events"][i]["Address"] + '</p>' + '<p>' + obj["Events"][i]["Month"] + ' ' + obj["Events"][i]["Day"] + ', ' + obj["Events"][i]["Year"] + '</p>' +
                                 '</div>';
-    
+
                             var info = new google.maps.InfoWindow({
                                 content: contentString
                             });
-                            
+                            console.log(contentString);
+
                             marker.addListener('mouseover', function() {
-                                info.open(map,marker);
+                                info.open(map, marker);
                             });
                             marker.addListener('mouseout', function() {
-                                info.close(map,marker);
+                                info.close(map, marker);
                             });
                             
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
                                 if(address != null) {
-                                    var latLng = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
+                                    var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["Lat"], obj["Events"][i][j]["Lng"]);
                                     
-                                    var marker = new google.maps.Marker({
+                                    var marker1 = new google.maps.Marker({
                                         map: map,
-                                        position: latLng,
+                                        position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
                                     });
                                      
-                                    var contentString = '<div class = "w3-container w3-padding w3-center">' +
+                                    var contentString1 = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
-                                        '<p>' + obj["Events"][i][j]["EmailAddress"] + '</p>' +
+                                        '<p>' + obj["Events"][i][j]["Email"] + '</p>' +
                                         '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
                                         '</div>';
     
-                                    var info = new google.maps.InfoWindow({
+                                    var info1 = new google.maps.InfoWindow({
                                         content: contentString
                                     });
                             
-                                    marker.addListener('mouseover', function() {
-                                        info.open(map,marker);
+                                    marker1.addListener('mouseover', function() {
+                                        info1.open(map,marker1);
                                     });
-                                    marker.addListener('mouseout', function() {
-                                        info.close(map,marker);
+                                    marker1.addListener('mouseout', function() {
+                                        info1.close(map,marker1);
                                     });
                                 }
                             }
@@ -122,8 +120,9 @@
             
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
-            //displayMapOfEvent("EagleHacks");
+            displayMapOfEvent("EagleHacks");
             
+            /*
             { //Code for Joe: given userID, get name and email address
                 var uid = mRef.getAuth().uid;
 
@@ -141,6 +140,7 @@
                     }
                 });
             }
+            */
         
         </script>
         <script async defer
