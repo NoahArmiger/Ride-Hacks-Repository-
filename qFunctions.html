@@ -94,10 +94,10 @@
                                     });
                                     
                                     marker.addListener('mouseover', function() {
-                                        info.open(map,marker);
+                                        info.open(map,this);
                                     });
                                     marker.addListener('mouseout', function() {
-                                        info.close(map,marker);
+                                        info.close(map,this);
                                     });
                                     
                                     x++;
