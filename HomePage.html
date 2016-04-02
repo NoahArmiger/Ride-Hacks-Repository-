@@ -374,7 +374,7 @@
          showHackathons();
          //Take in an event name to put all of its members markers and its own marker on map
         function displayMapOfEvent(eventName) {
-                mRef.once("value", function(snap) {
+                ref.once("value", function(snap) {
                     var obj = snap.val();
                     
                     for(var i in obj["Events"]) {
