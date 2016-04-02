@@ -389,7 +389,7 @@ function initMap() {
                 var markerArray = new Array();
             
             function displayMapOfEvent(eventName) {
-                ref.once("value", function(snap) {
+                mRef.once("value", function(snap) {
                     var obj = snap.val();
                     
                     for(var i in obj["Events"]) {
@@ -450,7 +450,11 @@ function initMap() {
                                     });
                                     
                                     marker1.addListener('mouseover', function() {
-                                        info1.setContent(contentString1);
+                                        info1.setContent('<div class = "w3-container w3-padding w3-center">' +
+                                        '<p>' + obj["Events"][i][j]["Name"] + '</p>' +
+                                        '<p>' + obj["Events"][i][j]["Email"] + '</p>' +
+                                        '<p>' + obj["Events"][i][j]["Address"] + '</p>' +
+                                        '</div>');
                                         info1.open(map,this);
                                     });
                                     marker1.addListener('mouseout', function() {
