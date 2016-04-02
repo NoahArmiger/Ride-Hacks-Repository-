@@ -6,6 +6,7 @@ function login(email, password, isNewUser, name) {
     }, function(error, authData) {
         if(error) {
             console.log("Login Failed!", error);
+            alert("Login Failed!");
         } else {
             console.log("Authenticated successfully with payload:", authData)
             if(isNewUser) {
