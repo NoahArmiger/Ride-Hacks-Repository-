@@ -12,7 +12,7 @@
         padding: 0;
       }
       #map {
-        height: 80%;
+        height: 60%;
           left: 0%;
           width:100%;
           top:0%;
@@ -68,7 +68,7 @@
 </head>
 <body> 
 <header class = "w3-container w3-blue">
-<h1 align = "center">Ride Hacks </h1>
+<h1 align = "center">rideHacks </h1>
     </header> 
 <br>
 
@@ -121,9 +121,9 @@
     <div class= "w3-center"> 
       
         <div class = "w3-container w3-blue ">
-        <h3>Are you <button class="w3-btn w3-black w3-round w3-hover-white">   Driving!    </button> or 
+        <h3>Are you <button class="w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white" id = 'Driving' onclick = "selectButton('Driving')">   Offering to Drive    </button> or 
           
-  <button class="w3-btn w3-black w3-round w3-hover-white">Looking for a ride</button></h3>
+  <button class="w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white" id = 'l4' onclick = "selectButton('l4')">Looking for a ride</button></h3>
     </div>
 
         
@@ -133,8 +133,11 @@
     </div>
           
     <div class = "w3-center">
-         <br>
-        <button class= "w3-btn w3-blue w3-rounder w3-round w3-hover-white w3-center" >Add pin </button>
+          <div id = 'er' style = "visibility: hidden" class="alert alert-danger" role="alert">
+  <strong>Error!</strong> Change a few things up and try submitting again.
+</div>
+        <button class= "w3-btn w3-blue w3-rounder w3-round w3-hover-white w3-center" onClick = "verifyPin()">Add pin </button>
+       
     </div>
 
     
@@ -159,6 +162,47 @@
         var muIndex = 0;
         var markers = new Array();
         var userMarkers = new Array();
+        var selectedBTN;
+        var selectedHackathon = false;
+        function verifyPin() {
+            var erStr = "";
+            if(!(selectedBTN == "l4" || selectedBTN == "Driving")) {
+                erStr += "Select if you are driving or looking for a driver<br>";
+            }
+            if(document.getElementById("pac-input").value == "") {
+                erStr +="Please add your location<br>";
+            }
+            if(!selectedHackathon) {
+                erStr += "Please select the desired hackathon from the map";
+            }
+            document.getElementById("er").style.visibility = "visible";
+            document.getElementById("er").innerHTML = "<strong>Error!</strong><br>" + erStr;
+        }
+        function selectButton(btn) {
+            if(selectedBTN == btn) {
+                selectedBTN = "";
+                document.getElementById(btn).className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+            }
+            else if(selectedBTN != "")
+            {
+                if(selectedBTN == 'l4') {
+                    selectedBTN = btn;
+                    document.getElementById('l4').className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+                    document.getElementById(btn).className =  'w3-btn w3-white w3-round w3-hover-white';
+                }
+                else {
+                    selectedBTN = btn;
+                    document.getElementById('Driving').className =  "w3-btn w3-border w3-border-white w3-blue w3-round w3-hover-white";
+                    document.getElementById(btn).className =  'w3-btn w3-white w3-round w3-hover-white';
+                }
+            }
+            else {
+                selectedBTN = btn;
+                var btn = document.getElementById(btn);
+                btn.className = 'w3-btn w3-white w3-round w3-hover-white';
+            }
+            console.log(selectedBTN);
+        }
       function initMap() {
           console.log("Init");
           ref = new Firebase("https://hackathondrive.firebaseio.com/")
@@ -180,11 +224,16 @@
 
         var autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo('bounds', map);
-
+var pinColor = "00FF00";
+    var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+        new google.maps.Size(71, 71),
+        new google.maps.Point(0,0),
+        new google.maps.Point(17, 34));
         var infowindow = new google.maps.InfoWindow();
         var marker = new google.maps.Marker({
           map: map,
-          anchorPoint: new google.maps.Point(0, -29)
+          anchorPoint: new google.maps.Point(0, -29),
+            icon: pinImage
         });
 
         autocomplete.addListener('place_changed', function() {
@@ -198,17 +247,23 @@
 
           // If the place has a geometry, then present it on a map.
           if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
+            //map.fitBounds(place.geometry.viewport);
           } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);  // Why 17? Because it looks good.
+            //map.setCenter(place.geometry.location);
+            //map.setZoom(17);  // Why 17? Because it looks good.
           }
+            
+            
+            
+            
           marker.setIcon(/** @type {google.maps.Icon} */({
-            url: place.icon,
+            //url: place.icon,
+          
             size: new google.maps.Size(71, 71),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(17, 34),
             scaledSize: new google.maps.Size(35, 35)
+              
           }));
           marker.setPosition(place.geometry.location);
           marker.setVisible(true);
@@ -229,8 +284,8 @@ addDriveLocation("EventName", document.getElementById("pac-input").value, "Name"
             var obj = snapshot.val();
             for(var i in obj["Events"]) {
 
-                    alert(obj["Events"][i]["Event"]);
-                    addHackathonMarker(obj["Events"][i]["Event"]);
+                    //alert(obj["Events"][i]["Event"]);
+                    //addHackathonMarker(obj["Events"][i]["Event"]);
                     }
             
             }
