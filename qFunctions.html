@@ -49,6 +49,8 @@
                                     fillOpacity: 1
                                 }
                             });
+                            
+                            hackathonLoc = marker;
 
                             var contentString = '<div class = "w3-container w3-padding w3-center">' +
                                 '<h2>' + obj["Events"][i]["Event"] + '</h2>' +
@@ -117,6 +119,7 @@
             //var mRef = new Firebase("https://glaring-inferno-647.firebaseio.com/");
             var mRef = new Firebase("https://hackathondrive.firebaseio.com/");
             var map;
+            var hackathonLoc;
             
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
