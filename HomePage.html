@@ -1,12 +1,68 @@
+<!DOCTYPE html>
 <!DOCTYPE HTML>
 <html>
 <head>
+     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<style>
-		.center-this {
+		 html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 50%;
+          left:25%;
+          width:50%;
+          top:25%;
+      }
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 300px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+        .center-this {
 			float: none;
 			margin: 0 auto;
 		}
+        
 	</style>
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 </head>
@@ -26,7 +82,7 @@
   <h2 align = "center">Your Events</h2>
        <br> 
   <p>Click on an event to see more information</p>            
-  <table class="table table-hover">
+  <table id = "tableEvents" class="table table-hover">
     <thead>
       <tr>
           <th>Event</th>
@@ -36,7 +92,7 @@
     </thead>
     <tbody>
       <tr>
-        <td>TribHacks</td>
+        <td>TribeHacks</td>
         <td>WM</td>
         <td>4/1/2016</td>
       </tr>
@@ -55,13 +111,17 @@
 </div>
     <br> 
     <div class= "w3-center"> 
-    <button class =  "w3-btn w3-blue w3-hover-yellow w3-round ">New Event</button>
+    <!--<button class =  "w3-btn w3-blue w3-hover-yellow w3-round ">New Event</button>-->
+        <h3>or, add an event below</h3>
     
         </div> 
 <br> 
     <br>
     
-           <h1 align = "center">Put Something With a map here? </h1>
+           <!--<h1 align = "center">Put Something With a map here? </h1>-->
+    <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
+   
+    <div style = "visibility:hidden" id="map"></div>
     <br>
     <br>
     <br>
@@ -69,5 +129,118 @@
   <p><i>"Now This is pod Racing ."</i></p>
   <p>Joe B</p>
 </div> 
+    
+    <script>
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+      var ref;
+      function initMap() {
+          ref = new Firebase("https://hackathondrive.firebaseio.com/")
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -33.8688, lng: 151.2195},
+          zoom: 13,
+            streetViewControl: false
+        });
+          
+        var input = /** @type {!HTMLInputElement} */(
+            document.getElementById('pac-input'));
+
+        var types = document.getElementById('type-selector');
+        //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
+
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+
+        var infowindow = new google.maps.InfoWindow();
+        var marker = new google.maps.Marker({
+          map: map,
+          anchorPoint: new google.maps.Point(0, -29)
+        });
+
+        autocomplete.addListener('place_changed', function() {
+          infowindow.close();
+          marker.setVisible(false);
+          var place = autocomplete.getPlace();
+          if (!place.geometry) {
+            window.alert("Autocomplete's returned place contains no geometry");
+            return;
+          }
+
+          // If the place has a geometry, then present it on a map.
+          if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+          } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);  // Why 17? Because it looks good.
+          }
+          marker.setIcon(/** @type {google.maps.Icon} */({
+            url: place.icon,
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(35, 35)
+          }));
+          marker.setPosition(place.geometry.location);
+          marker.setVisible(true);
+          var pos = place.geometry.location;
+          console.log(pos);
+            addDriveLocation("EventName", document.getElementById("pac-input").value, '"Name"', "jberns1@umbc.edu", "Driving to");
+
+          var address = '';
+          if (place.address_components) {
+            address = [
+              (place.address_components[0] && place.address_components[0].short_name || ''),
+              (place.address_components[1] && place.address_components[1].short_name || ''),
+              (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');
+          }
+
+          infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+          infowindow.open(map, marker);
+        });
+
+        function addDriveLocation(event, address, name, email, desc)
+        {
+            console.log('entered');
+             ref.once("value", function(snapshot) {
+                // alert('2');
+            console.log(snapshot.val());
+                // alert('3');
+            var obj = snapshot.val();
+                 console.log('4');
+            //add driver/l4 to individual event
+            for(var i in obj["Events"]) {      
+                console.log(obj["Events"][i]["EventName"] + " - " + event + " - " + i);
+                
+            if(obj["Events"][i]["EventName"] == event) {
+                console.log("IN");
+                ref.child("Events").child(i).push({Address: address, Driving: desc, Email: email, Name: name});
+            /*for(var j in obj["Events"][i][j])
+                {
+                    if(obj["Events"][i][j] = null) {
+                   console.log('6');
+                    //console.log(obj["hackathondrive"][i]["Event"]);
+                    
+               }
+                console.log('7');   
+                }*/
+            }
+            }
+            //add driver/l4 event to individual list
+            for(var i in obj["Users"]) {
+                if(obj["Users"][i]["Email"] == email) {
+                    ref.child("Users").child(i).push({Address: address, Driving: desc, Email: email, Name: name});
+                }
+            }
+         },function (errorObject) {console.log("The read failed: " + errorObject.code);});  
+        }
+          
+      }
+    </script>
+      <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPuhAA-CpEQ6g9BuOJxg1tfe5PF9BjmXc&libraries=places&callback=initMap"
+        async defer></script>
 </body> 
 </html> 
