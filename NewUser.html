@@ -69,7 +69,67 @@
       </div>
 
     </div> <!-- /container -->
-      <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+
+      <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+
+    
+        <div id="map"></div>
+        <script>
+            //Used to login returning users
+            function login(email, password) {
+                mRef.authWithPassword({
+                    email   : email,
+                    password: password
+                }, function(error, authData) {
+                if(error) {
+                    console.log("Login Failed!", error);
+                } else {
+                    console.log("Authenticated successfully with payload:", authData)
+                }
+            });
+                
+            }
+            
+            //Used when creating new users
+            function createAccount(email, password, name) {
+                var success = false;
+                mRef.createUser({
+                    email: email,
+                    password: password
+                }, function(error, userData) {
+                    if (error) {
+                        switch (error.code) {
+                            case "EMAIL_TAKEN":
+                                console.log("The new user account cannot be created because the email is already in use.");
+                                break;
+                            case "INVALID_EMAIL":
+                                console.log("The specified email is not a valid email.");
+                                break;
+                            default:
+                                console.log("Error creating user:", error);
+                            }
+                    } else {
+                        console.log("Successfully created user account with uid:", userData.uid);
+                        successCreated();
+                        
+                    }
+                });
+                function successCreated() {
+                    mRef.child("Users").push({
+                        EmailAddress: email,
+                        Name: name
+                    });
+                }
+                
+            }
+            
+            
+            
+            //var mRef = new Firebase("https://glaring-inferno-647.firebaseio.com/");
+            var mRef = new Firebase("https://hackathondrive.firebaseio.com/");
+        
+           createAccount( document.getElementById("email"), document.getElementById("password"), document.getElementById("name"));
+      </script>
     <script>
     </script>
     </body>
