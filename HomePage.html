@@ -490,7 +490,7 @@ function initMap() {
                         }
                     }
                 });
-                var uid = mRef.getAuth().uid;
+                var uid = ref.getAuth().uid;
                 mRef.once("value", function(snap) {
                     var obj = snap.val();
                     for(var i in obj["Users"]) {
