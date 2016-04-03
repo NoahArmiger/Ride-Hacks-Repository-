@@ -95,7 +95,7 @@
         <td>HackUMBC</td>
         <td>UMBC</td>
         <td>Ended</td>
-      </tr>
+      </tr> 
       <tr>
         <td>BitCamp</td>
         <td>The Evil Empire</td>
@@ -150,38 +150,43 @@
       // This example requires the Places library. Include the libraries=places
       // parameter when you first load the API. For example:
       // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-var ref;
-var geocoder;
-var map;
-var hackathonLoc;
-var uid;
-var hackathonLocEvent;
-var curloc;
-var hackDate;
-var pos;
-var mIndex = 0;
-var markers = new Array();
-var userMarkers = new Array();
-var selectedBTN;
-var markerToAdd;
-var selectedHackathon = false;
-function verifyPin() {
-    var erStr = "";
-    if(!(selectedBTN == "l4" || selectedBTN == "Driving")) 
-    {
-        erStr += "Select if you are driving or looking for a driver<br>";
-    }
-    if(document.getElementById("pac-input").value == "") {
-        erStr +="Please add your location<br>";
-    }
-    if(hackathonLoc == "" || hackathonLoc == undefined) {
-        erStr += "Please select the desired hackathon from the map";
-    }
-    if(erStr != "") {
-        document.getElementById("er").style.visibility = "visible";
-        document.getElementById("er").class += "alert-danger"
-        document.getElementById("er").innerHTML = "<strong>Error!</strong><br>" + erStr;
-    }
+        var ref;
+        var geocoder;
+        var map;
+        var hackathonLoc;
+        var uid;
+        var hackathonLocEvent;  
+        var curloc;
+        var hackDate;
+        var pos;
+        var mIndex = 0;
+        var markers = new Array();
+        var userMarkers = new Array();
+        var selectedBTN;
+        var markerToAdd;
+        var markerArray = new Array();
+        var contentArray = new Array();
+            
+        var email;
+        var userAddress;
+        var selectedHackathon = false;
+        function verifyPin() {
+            var erStr = "";
+            if(!(selectedBTN == "l4" || selectedBTN == "Driving")) 
+            {
+                erStr += "Select if you are driving or looking for a driver<br>";
+            }
+            if(document.getElementById("pac-input").value == "") {
+                erStr +="Please add your location<br>";
+            }
+            if(hackathonLoc == "" || hackathonLoc == undefined) {
+                erStr += "Please select the desired hackathon from the map";
+            }
+            if(erStr != "") {
+                document.getElementById("er").style.visibility = "visible";
+                document.getElementById("er").class += "alert-danger"
+                document.getElementById("er").innerHTML = "<strong>Error!</strong><br>" + erStr;
+            }   
     var dont = false;
     if(erStr == "") {
         document.getElementById("er").style.visibility = "hidden";
@@ -205,7 +210,7 @@ function verifyPin() {
         if(!dont){
         document.getElementById("er").style.visibility = "visible";
         document.getElementById("er").class += "alert alert-success"
-        document.getElementById("er").innerHTML = "<strong>Pin added! </strong>";
+        document.getElementById("er").innerHTML = "<strong>Event added! </strong>";
         }
     }
 }
@@ -302,7 +307,7 @@ function initMap() {
             marker.addListener('click', function(){ hackathonLocEvent = event; hackDate = date; displayMapOfEvent(event);for(var i = 0; i < mIndex;i++) {
                 markers[i].setMap(null);
                 }
-            mIndex = 0; markers = {};
+            mIndex = 0; markers = new Array();
             });
             marker.addListener('mouseover', function(){
                 var stringContent = '<div class = "w3-container w3-padding w3-center">' +
@@ -385,13 +390,14 @@ function initMap() {
                     for(var j in obj["Users"][i]["Events"])
                         {
                             var address = obj["Users"][i]["Events"][j]["Address"];
-                            var Event = '"'+obj["Users"][i]["Events"][j]["Event"]+'"';
+                            var Event = obj["Users"][i]["Events"][j]["Event"];
                             var year = obj["Users"][i]["Events"][j]["Year"];
                             var day = obj["Users"][i]["Events"][j]["Day"];
                             var month = obj["Users"][i]["Events"][j]["Month"];
                             var desc = obj["Users"][i]["Events"][j]["Driving"]
-                            
-                            tablestr += "<tr onclick = 'if(userAddress != null){ userAddress.setMap(null);} if(hackathonLoc != null){hackathonLoc.setMap(null);}for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = {};displayMapOfEvent(" + Event + ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
+                            console.log(markerArray);
+                            console.log(markerArray.length);
+                            tablestr += "<tr onclick = 'if(userAddress != null){ userAddress.setMap(null);} if(hackathonLoc != null){hackathonLoc.setMap(null);} for(var i = 0; i < markerArray.length;i++) {  markerArray[i].setMap(null); } markerArray = new Array(); for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = new Array();displayMapOfEvent(" + '"' +Event +'"'+ ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
                            
                         }
                 }
@@ -410,26 +416,24 @@ function initMap() {
           function clearMarkerArray() {
              try {
               if(userAddress != null) { userAddress.setMap(null);}
+                 console.log(markerArray.length);
+                 console.log(markerArray);
               for(var i = 0; i < markerArray.length;i++) {
                   markerArray[i].setMap(null);
               }
-                
+                markerArray = new Array();
                  for(var i = 0; i < markers.length;i++) {
                   markers[i].setMap(null);
               }
                  markers = new Array();
                  mIndex = 0;
              }
-              catch(e) {}
+              catch(e) {console.log(e.message);}
           }
          showHackathons();
          
          //Take in an event name to put all of its members markers and its own marker on map
-             var markerArray = new Array();
-            var contentArray = new Array();
             
-               var email;
-            var userAddress;
             
         
             
