@@ -76,7 +76,7 @@
      
   <h2 align = "center">Your Events</h2>
        <br> 
-  <p>Click on an event to see more information</p>            
+  <p>Click on an event below to see more information on map OR click on the map pins.</p>            
   <table id = "tableEvents" class="table table-hover">
     <thead>
       <tr>
@@ -110,11 +110,11 @@
     <li><a class = "w3-hover-blue" onclick = "showHackathons()"> Show All Events</a> </li>
 
 </nav>
-          <nav class="w3-btn w3-blue">
+       <!--   <nav class="w3-btn w3-blue">
   <ul class="nav navbar-nav">
     <li><a class = "w3-hover-blue" onclick = "showYourHackathons()"> Show Your Events</a> </li>
 
-</nav>
+</nav>-->
 </div>
       <input id="pac-input" class="controls" type="text" placeholder="Enter your location">
     <br>
@@ -228,12 +228,13 @@ function selectButton(btn) {
 }
 function initMap() {
     ref = new Firebase("https://hackathondrive.firebaseio.com/")
-    uid = ref.getAuth().uid;
-    //uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
+    //uid = ref.getAuth().uid;
+    uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
     geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.887, lng: -96.437},
         zoom: 4,
+        scrollwheel: false,
         streetViewControl: false
     });
     var input = /** @type {!HTMLInputElement} */(document.getElementById('pac-input'));
@@ -377,12 +378,14 @@ function initMap() {
                         {
                             console.log("j: " + j);
                             var address = obj["Users"][i]["Events"][j]["Address"];
-                            var Event = obj["Users"][i]["Events"][j]["Event"];
+                            var Event = '"'+obj["Users"][i]["Events"][j]["Event"]+'"';
                             var year = obj["Users"][i]["Events"][j]["Year"];
                             var day = obj["Users"][i]["Events"][j]["Day"];
                             var month = obj["Users"][i]["Events"][j]["Month"];
                             var desc = obj["Users"][i]["Events"][j]["Driving"]
-                            tablestr += "<tr><td>" + Event + "<br>" + desc  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
+                            
+                            tablestr += "<tr onclick = 'for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = {};displayMapOfEvent(" + Event + ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
+                            console.log("TBLSTR - " + tablestr);
                         }
                 }
              
@@ -399,26 +402,72 @@ function initMap() {
        
           function clearMarkerArray() {
              try {
-              
+              if(userAddress != null) { userAddress.setMap(null);}
               for(var i = 0; i < markerArray.length;i++) {
                   markerArray[i].setMap(null);
               }
                 
-                 /*for(var i = 0; i < markers.length;i++) {
+                 for(var i = 0; i < markers.length;i++) {
                   markers[i].setMap(null);
               }
                  markers = new Array();
-                 mIndex = 0;*/
+                 mIndex = 0;
              }
               catch(e) {}
           }
          showHackathons();
+         
          //Take in an event name to put all of its members markers and its own marker on map
              var markerArray = new Array();
             var contentArray = new Array();
             
+               var email;
+            var userAddress;
+            
             function displayMapOfEvent(eventName) {
+                //var uid = ref.getAuth().uid;
+                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
                 ref.once("value", function(snap) {
+                    var obj = snap.val();
+                    for(var i in obj["Users"]) {
+                        if(obj["Users"][i]["UserID"] == uid) {
+                            email = obj["Users"][i]["EmailAddress"];
+                            
+                            for(var j in obj["Users"][i]["Events"]) {
+                                if(obj["Users"][i]["Events"][j]["Event"] == eventName) {
+                                    var latLng = new google.maps.LatLng(obj["Users"][i]["Events"][j]["lat"], obj["Users"][i]["Events"][j]["lng"]);
+                                    
+                                    var userMarker = new google.maps.Marker({
+                                        map: map,
+                                        position: latLng,
+                                        title: eventName,
+                                        icon: {
+                                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                                            scale: 5,
+                                            fillColor: 'green',
+                                            fillOpacity: 1
+                                        }
+                                    });
+                                    
+                                    userAddress = userMarker;
+                                    
+                                    var userContentString = '<div class = "w3-container w3-padding w3-center">' +
+                                        '<p>' + 'You' + '</p>' +
+                                        '<p>' + obj["Users"][i]["Events"][j]["Address"] +'</p>' +
+                                        '</div>';
+                                    var info = new google.maps.InfoWindow();
+                                    userMarker.addListener('mouseover', function() {
+                                        info.setContent(userContentString);
+                                        info.open(map, this);
+                                    });
+                                    userMarker.addListener('mouseout', function() {
+                                        info.close(map, this);
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    
                     var info1 = new google.maps.InfoWindow();
                     
                     var obj = snap.val();
@@ -457,7 +506,7 @@ function initMap() {
                             var x = 0;
                             for(var j in obj["Events"][i]) {
                                 var address = obj["Events"][i][j]["Address"];
-                                if(address != null) {
+                                if(address != null && obj["Events"][i][j]["Email"] != email) {
                                     var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
                                     var marker1 = new google.maps.Marker({
@@ -493,44 +542,20 @@ function initMap() {
                             }
                         }
                     }
+                    console.log(email);
                 });
-                var uid = ref.getAuth().uid;
-                ref.once("value", function(snap) {
-                    var obj = snap.val();
-                    for(var i in obj["Users"]) {
-                        if(obj["Users"][i]["UserID"] == uid) {
-                            for(var j in obj["Users"][i]["Events"]) {
-                                if(obj["Users"][i]["Events"][j]["Event"] == eventName) {
-                                    var latLng = new google.maps.LatLng(obj["Users"][i]["Events"][j]["lat"], obj["Users"][i]["Events"][j]["lng"]);
-                                    
-                                    var marker = new google.maps.Marker({
-                                        map: map,
-                                        position: latLng,
-                                        title: eventName,
-                                        icon: {
-                                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                            scale: 5,
-                                            fillColor: 'green',
-                                            fillOpacity: 1
-                                        }
-                                    });
-                                    
-                                    var contentString = '<div class = "w3-container w3-padding w3-center">' +
-                                        '<p>' + 'You' + '</p>' +
-                                        '<p>' + obj["Users"][i]["Events"][j]["Address"] +'</p>' +
-                                        '</div>';
-                                    var info = new google.maps.InfoWindow({
-                                        content: contentString
-                                    });
-                                    marker.addListener('mouseover', function() {
-                                        info.open(map, this);
-                                    });
-                                    marker.addListener('mouseout', function() {
-                                        info.close(map, this);
-                                    });
-                                }
-                            }
-                        }
+                
+            }
+            
+            //return a latLng for address
+            function codeAddress(address) {
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode( { 'address': address}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        return results[0].geometry.location;
+                        console.log(address);
+                    } else {
+                        alert("Geocode was not successful for the following reason: " + status);
                     }
                 });
             }
@@ -558,7 +583,7 @@ function initMap() {
          }, function (er) {});
         }
         
-        /*function showYourHackathons() {
+        function showYourHackathons() {
             clearMarkerArray();
                  //hackathonLoc.setMap(null);
                  if(hackathonLoc != null) { hackathonLoc.setMap(null); }
@@ -569,7 +594,7 @@ function initMap() {
              
              if(obj["Users"][i]["UserID"] == uid){
              for(var j in obj["Users"][i]["Events"]){
-                \
+                
                  var date = {
                      year: obj["Users"][i]["Events"][j]["Year"],
                      month: obj["Users"][i]["Events"][j]["Month"],
@@ -585,7 +610,7 @@ function initMap() {
          
          
          }, function (er) {});
-        }*/
+        }
         
             //return a latLng for address
             function codeAddress(address) {
