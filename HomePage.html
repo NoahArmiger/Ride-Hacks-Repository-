@@ -705,6 +705,7 @@ function initMap() {
              }
               function showHackathons() {
                   clearMarkerArray();
+                  directionsDisplay.setDirections({routes: []});
                   //hackathonLoc.setMap(null);
                   if(hackathonLoc != null) { hackathonLoc.setMap(null); }
           ref.once("value", function(snapshot) {
