@@ -231,7 +231,6 @@
         var directionsDisplay;
         var hasUserAddress;
         var userIsDriving;
-
         var email;
         var userAddress;
         var selectedHackathon = false;
@@ -266,6 +265,7 @@
                 
                     if(addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), hackDate, pos) == false) 
                         {
+                            
                             dont = true;
                         }
                     else{  if(mrk != null) {mrk.setMap(null)};}
@@ -279,6 +279,8 @@
         document.getElementById("er").style.visibility = "visible";
         document.getElementById("er").class += "alert alert-success"
         document.getElementById("er").innerHTML = "<strong>Event added! </strong>";
+            console.log(hackathonLocEvent);
+            setTimeout(            displayMapOfEvent(hackathonLocEvent), 1000);
          
         }
         //clearMarkerArray();
@@ -437,6 +439,7 @@ function initMap() {
                 }
             }
          },function (errorObject) {console.log("The read failed: " + errorObject.code);});  
+            return true;
         }
           
       ref = new Firebase("https://hackathondrive.firebaseio.com/");
@@ -481,7 +484,7 @@ function initMap() {
                                 }
                             
                             
-                            tablestr += "<tr onclick = 'if(userAddress != null){ userAddress.setMap(null);} if(hackathonLoc != null){hackathonLoc.setMap(null);} for(var i = 0; i < markerArray.length;i++) {  markerArray[i].setMap(null); } markerArray = new Array(); for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = new Array();displayMapOfEvent(" + '"' +Event +'"'+ ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address2 + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
+                            tablestr += "<tr onclick = 'if(map != undefined){map.setCenter({lat: 39.887, lng: -96.437}); map.setZoom(4);                 }if(userAddress != null){ userAddress.setMap(null);} if(hackathonLoc != null){hackathonLoc.setMap(null);} for(var i = 0; i < markerArray.length;i++) {  markerArray[i].setMap(null); } markerArray = new Array(); for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = new Array();displayMapOfEvent(" + '"' +Event +'"'+ ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address2 + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
                            
                         }
                 }
@@ -520,7 +523,7 @@ function initMap() {
             
         
             
-          function displayMapOfEvent(eventName) {
+           function displayMapOfEvent(eventName) {
                 //var uid = ref.getAuth().uid;
                 var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
                 hasUserAddress = false;
@@ -675,53 +678,6 @@ function initMap() {
                 });
                 
             }
-            
-            //return a latLng for address
-            function codeAddress(address) {
-                var geocoder = new google.maps.Geocoder();
-                geocoder.geocode( { 'address': address}, function(results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        return results[0].geometry.location;
-                       
-                    } else {
-                        alert("Geocode was not successful for the following reason: " + status);
-                    }
-                });
-            }
-            
-            //return a latLng for address
-            function codeAddress(address) {
-                var geocoder = new google.maps.Geocoder();
-                geocoder.geocode( { 'address': address}, function(results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        return results[0].geometry.location;
-                    } else {
-                        alert("Geocode was not successful for the following reason: " + status);
-                    }
-                });
-            }
-             function showHackathons() {
-                 clearMarkerArray();
-                 //hackathonLoc.setMap(null);
-                 if(hackathonLoc != null) { hackathonLoc.setMap(null); }
-         ref.once("value", function(snapshot) {
-             var obj = snapshot.val();
-         for(var i in obj["Events"]) {
-            
-             if((obj["Events"][i]["Lat"]) != undefined && (obj["Events"][i]["Lng"]) != undefined) {
-                 var date = {
-                     year: obj["Events"][i]["Year"],
-                     month: obj["Events"][i]["Month"],
-                     day: obj["Events"][i]["Day"]
-                 }
-                 
-            addHackathonMarker(obj["Events"][i]["Event"], obj["Events"][i]["Address"],obj["Events"][i]["Lat"], obj["Events"][i]["Lng"], date);
-             }
-         }
-         
-         
-         }, function (er) {});
-        }
         
        
         
