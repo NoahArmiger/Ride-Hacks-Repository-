@@ -228,12 +228,13 @@ function selectButton(btn) {
 }
 function initMap() {
     ref = new Firebase("https://hackathondrive.firebaseio.com/")
-    uid = ref.getAuth().uid;
-    //uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
+    //uid = ref.getAuth().uid;
+    uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
     geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.887, lng: -96.437},
         zoom: 4,
+        scrollwheel: false,
         streetViewControl: false
     });
     var input = /** @type {!HTMLInputElement} */(document.getElementById('pac-input'));
@@ -424,8 +425,8 @@ function initMap() {
             var userAddress;
             
             function displayMapOfEvent(eventName) {
-                var uid = ref.getAuth().uid;
-                //var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
+                //var uid = ref.getAuth().uid;
+                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
                 ref.once("value", function(snap) {
                     var obj = snap.val();
                     for(var i in obj["Users"]) {
