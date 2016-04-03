@@ -47,6 +47,7 @@
                 //var uid = ref.getAuth().uid;
                 var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
 
+                hasUserAddress = false;
                 ref.once("value", function(snap) {
                     var obj = snap.val();
 
@@ -66,6 +67,7 @@
                                     });
                                     
                                     userAddress = userMarker;
+                                    hasUserAddress = true;
                                     
                                     var userContentString = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + 'You' + '</p>' +
@@ -117,8 +119,6 @@
                             marker.addListener('mouseout', function() {
                                 info.close(map, this);
                             });
-                            
-                            console.log(userAddress);
                             
                             //making a route from userAddress to hackathonLoc
                             directionsService.route({
@@ -206,6 +206,7 @@
             //Calculate and Display Route
             var directionsService;
             var directionsDisplay;
+            var hasUserAddress;
             
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
