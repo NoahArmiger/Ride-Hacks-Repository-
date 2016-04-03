@@ -229,6 +229,7 @@
         var contentArray = new Array();
         var directionsService;
         var directionsDisplay;
+        var hasUserAddress;
             
         var email;
         var userAddress;
@@ -514,6 +515,9 @@ function initMap() {
           function displayMapOfEvent(eventName) {
                 var uid = ref.getAuth().uid;
                 //var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
+                
+                hasUserAddress = false;
+                
                 ref.once("value", function(snap) {
                     var obj = snap.val();
                     for(var i in obj["Users"]) {
@@ -540,6 +544,7 @@ function initMap() {
                                     });
                                     
                                     userAddress = userMarker;
+                                    hasUserAddress = true;
                                     
                                     var userContentString = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + 'You' + '</p>' +
@@ -595,17 +600,19 @@ function initMap() {
                             });
                             
                             //making a route from userAddress to hackathonLoc
-                            directionsService.route({
-                                origin: userAddress.getPosition(),
-                                destination: hackathonLoc.getPosition(),
-                                travelMode: google.maps.TravelMode.DRIVING
-                            }, function(response, status) {
-                                if (status === google.maps.DirectionsStatus.OK) {
-                                    directionsDisplay.setDirections(response);
-                                } else {
-                                    window.alert('Directions request failed due to ' + status);
-                                }
-                            });
+                            if(hasUserAddress) {
+	                            directionsService.route({
+	                                origin: userAddress.getPosition(),
+	                                destination: hackathonLoc.getPosition(),
+	                                travelMode: google.maps.TravelMode.DRIVING
+	                            }, function(response, status) {
+	                                if (status === google.maps.DirectionsStatus.OK) {
+	                                    directionsDisplay.setDirections(response);
+	                                } else {
+	                                    window.alert('Directions request failed due to ' + status);
+	                                }
+	                            });
+                            }
                             
                             var x = 0;
                             for(var j in obj["Events"][i]) {
