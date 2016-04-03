@@ -230,6 +230,7 @@
         var directionsService;
         var directionsDisplay;
         var hasUserAddress;
+        var userIsDriving;
 
         var email;
         var userAddress;
@@ -522,9 +523,7 @@ function initMap() {
           function displayMapOfEvent(eventName) {
                 //var uid = ref.getAuth().uid;
                 var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
-                
                 hasUserAddress = false;
-                
                 ref.once("value", function(snap) {
                     var obj = snap.val();
                     for(var i in obj["Users"]) {
@@ -540,19 +539,12 @@ function initMap() {
                                         position: latLng,
                                         title: eventName,
                                         icon: 'Google_Maps_Markers/orange_MarkerY.png'
-                                        /*
-                                        icon: {
-                                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                            scale: 5,
-                                            fillColor: 'green',
-                                            fillOpacity: 1
-                                        }
-                                        */
                                     });
                                     
                                     userAddress = userMarker;
+                                    hasUserAddress = true;
                                     if(obj["Users"][i]["Events"][j]["Driving"] == "Offering to Drive") {
-                                        hasUserAddress = true;
+                                        userIsDriving = true;
                                     }
                                     
                                     var userContentString = '<div class = "w3-container w3-padding w3-center">' +
@@ -584,14 +576,6 @@ function initMap() {
                                 position: latLng,
                                 title: eventName,
                                 icon: 'Google_Maps_Markers/blue_MarkerH.png'
-                                /*
-                                icon: {
-                                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                    scale: 5,
-                                    fillColor: 'gold',
-                                    fillOpacity: 1
-                                }
-                                */
                             });
                             
                             hackathonLoc = marker;
@@ -610,19 +594,32 @@ function initMap() {
                             
                             //making a route from userAddress to hackathonLoc
                             if(hasUserAddress) {
-	                            directionsService.route({
-	                                origin: userAddress.getPosition(),
-	                                destination: hackathonLoc.getPosition(),
-	                                travelMode: google.maps.TravelMode.DRIVING
-	                            }, function(response, status) {
-	                                if (status === google.maps.DirectionsStatus.OK) {
-	                                    directionsDisplay.setDirections(response);
-	                                } else {
-	                                    window.alert('Directions request failed due to ' + status);
-	                                }
-	                            });
+                                directionsService.route({
+                                    origin: userAddress.getPosition(),
+                                    destination: hackathonLoc.getPosition(),
+                                    travelMode: google.maps.TravelMode.DRIVING
+                                }, function(response, status) {
+                                    if (status === google.maps.DirectionsStatus.OK) {
+                                        directionsDisplay.setDirections(response);
+                                    } else {
+                                        window.alert('Directions request failed due to ' + status);
+                                    }
+                                });
                             } else {
                                 directionsDisplay.setDirections({routes: []});
+                            }
+                            if(!userIsDriving) {
+                                directionsDisplay.setOptions({
+                                    polylineOptions: {
+                                        visible: false
+                                    }
+                                });
+                            } else {
+                                directionsDisplay.setOptions({
+                                    polylineOptions: {
+                                        visible: true
+                                    }
+                                });
                             }
                             
                             var x = 0;
