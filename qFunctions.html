@@ -67,8 +67,9 @@
                                     });
                                     
                                     userAddress = userMarker;
+                                    hasUserAddress = true;
                                     if(obj["Users"][i]["Events"][j]["Driving"] == "Offering to Drive") {
-                                        hasUserAddress = true;
+                                        userIsDriving = true;
                                     }
                                     
                                     var userContentString = '<div class = "w3-container w3-padding w3-center">' +
@@ -137,6 +138,19 @@
                                 });
                             } else {
                                 directionsDisplay.setDirections({routes: []});
+                            }
+                            if(!userIsDriving) {
+                                directionsDisplay.setOptions({
+                                    polylineOptions: {
+                                        visible: false
+                                    }
+                                });
+                            } else {
+                                directionsDisplay.setOptions({
+                                    polylineOptions: {
+                                        visible: true
+                                    }
+                                });
                             }
                             
                             var x = 0;
@@ -213,6 +227,7 @@
             var directionsService;
             var directionsDisplay;
             var hasUserAddress;
+            var userIsDriving;
             
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
