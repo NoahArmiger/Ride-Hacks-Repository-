@@ -39,7 +39,7 @@
             
             function displayMapOfEvent(eventName) {
                 //var uid = ref.getAuth().uid;
-                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
+                var uid = "501f70d2-2358-4c06-85e8-8927c42baffb";
 
                 ref.once("value", function(snap) {
                     var obj = snap.val();
@@ -130,10 +130,18 @@
                                 if(address != null && obj["Events"][i][j]["Email"] != email) {
                                     var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
+                                    var image;
+                                    if(obj["Events"][i][j]["Driving"] == "Offering to Drive") {
+                                        image = 'Google_Maps_Markers/red_MarkerD.png';
+                                    } else {
+                                        image = 'Google_Maps_Markers/yellow_MarkerL.png';
+                                    }
+                                    
                                     var marker1 = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
+                                        icon: image
                                     });
                                     
                                     markerArray[x] = marker1;
