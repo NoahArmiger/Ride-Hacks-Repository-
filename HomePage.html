@@ -388,7 +388,7 @@ function initMap() {
                             var month = obj["Users"][i]["Events"][j]["Month"];
                             var desc = obj["Users"][i]["Events"][j]["Driving"]
                             
-                            tablestr += "<tr onclick = 'for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = {};displayMapOfEvent(" + Event + ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
+                            tablestr += "<tr onclick = 'if(userAddress != null){ userAddress.setMap(null);} if(hackathonLoc != null){hackathonLoc.setMap(null);}for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = {};displayMapOfEvent(" + Event + ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
                             console.log("TBLSTR - " + tablestr);
                         }
                 }
