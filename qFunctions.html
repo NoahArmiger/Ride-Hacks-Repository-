@@ -135,6 +135,8 @@
                                         window.alert('Directions request failed due to ' + status);
                                     }
                                 });
+                            } else {
+                                directionsDisplay.setDirections({routes: []});
                             }
                             
                             var x = 0;
