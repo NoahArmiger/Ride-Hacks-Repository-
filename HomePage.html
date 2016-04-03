@@ -2,6 +2,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
      <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -74,7 +77,33 @@
    <div class="container">
        <br>
      
-  <h2 align = "center">Your Events</h2>
+  <h2 align = "center">Your Events
+      <!-- <button  type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#myModal2">?</button>-->
+</h2>
+<!-- Modal -->
+<div id="myModal2" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confused?</h4>
+      </div>
+      <div class="modal-body">
+        <p ><div align='left'>
+          Select a row in your events to see more information on the map.
+        
+          </div>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
        <br> 
   <p>Click on an event below to see more information on map OR click on the map events.</p>            
   <table id = "tableEvents" class="table table-hover">
@@ -104,12 +133,44 @@
     </tbody>
   </table>
 </div>
+    
+
 <div class = "w3-center">
     <nav class="w3-btn w3-blue">
   <ul class="nav navbar-nav">
     <li><a class = "w3-hover-blue" onclick = "showHackathons()"> Show All Events</a> </li>
 
 </nav>
+       <button  type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#myModal">?</button>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confused?</h4>
+      </div>
+      <div class="modal-body">
+        <p ><div align='left'>1) Type your location into the textbox on top of the google map. <br>
+           2) Select a red event pin to choose which Hackathon you want to find transport information about. <br>
+           3) Scroll below the map and choose whether you are driving or looking for a ride.  <br>
+           4) Add event!
+          <br><br>
+           <div align = 'right' style = 'margin-right: 40px' > <img src = 'ButterflyKisses.png' style="width:200px; height:120px"></div>
+          </div>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+       
        <!--   <nav class="w3-btn w3-blue">
   <ul class="nav navbar-nav">
     <li><a class = "w3-hover-blue" onclick = "showYourHackathons()"> Show Your Events</a> </li>
@@ -239,8 +300,8 @@ function selectButton(btn) {
 }
 function initMap() {
     ref = new Firebase("https://hackathondrive.firebaseio.com/")
-    //uid = ref.getAuth().uid;
-    uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
+    uid = ref.getAuth().uid;
+    //uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
     geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.887, lng: -96.437},
@@ -339,9 +400,7 @@ function initMap() {
                 for(var i in obj["Events"]) {      
                     for(var k in obj["Events"][i])
                         {
-                            console.log(obj);
-                            console.log(obj["Events"][i][k]["Email"] + " - " + email);
-                            console.log(obj["Events"][i]["Event"] + " - " + event)                
+                                        
                             if(obj["Events"][i][k]["Email"] == email && obj["Events"][i]["Event"] == event) {
                               
                                 document.getElementById("er").style.visibility = "visible";
@@ -389,15 +448,24 @@ function initMap() {
                 if(obj["Users"][i]["EmailAddress"] == email) {
                     for(var j in obj["Users"][i]["Events"])
                         {
+                            var address2;
                             var address = obj["Users"][i]["Events"][j]["Address"];
                             var Event = obj["Users"][i]["Events"][j]["Event"];
                             var year = obj["Users"][i]["Events"][j]["Year"];
                             var day = obj["Users"][i]["Events"][j]["Day"];
                             var month = obj["Users"][i]["Events"][j]["Month"];
                             var desc = obj["Users"][i]["Events"][j]["Driving"]
-                            console.log(markerArray);
-                            console.log(markerArray.length);
-                            tablestr += "<tr onclick = 'if(userAddress != null){ userAddress.setMap(null);} if(hackathonLoc != null){hackathonLoc.setMap(null);} for(var i = 0; i < markerArray.length;i++) {  markerArray[i].setMap(null); } markerArray = new Array(); for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = new Array();displayMapOfEvent(" + '"' +Event +'"'+ ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
+                            
+                            for(var z in obj["Events"])
+                                {
+                                    if(obj["Events"][z]["Event"] == Event)
+                                        {
+                                            address2 = obj["Events"][z]["Address"];
+                                        }
+                                }
+                            
+                            
+                            tablestr += "<tr onclick = 'if(userAddress != null){ userAddress.setMap(null);} if(hackathonLoc != null){hackathonLoc.setMap(null);} for(var i = 0; i < markerArray.length;i++) {  markerArray[i].setMap(null); } markerArray = new Array(); for(var i = 0; i < mIndex;i++) {  markers[i].setMap(null); } mIndex = 0; markers = new Array();displayMapOfEvent(" + '"' +Event +'"'+ ")'><td>" + Event + "<br>" + desc  +"</td><td>" + address2 + "</td><td>" + month + " " + day + ", " + year +"</td></tr>"                     
                            
                         }
                 }
@@ -416,8 +484,7 @@ function initMap() {
           function clearMarkerArray() {
              try {
               if(userAddress != null) { userAddress.setMap(null);}
-                 console.log(markerArray.length);
-                 console.log(markerArray);
+                 
               for(var i = 0; i < markerArray.length;i++) {
                   markerArray[i].setMap(null);
               }
@@ -437,9 +504,9 @@ function initMap() {
             
         
             
-            function displayMapOfEvent(eventName) {
-                //var uid = ref.getAuth().uid;
-                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
+          function displayMapOfEvent(eventName) {
+                var uid = ref.getAuth().uid;
+                //var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
                 ref.once("value", function(snap) {
                     var obj = snap.val();
                     for(var i in obj["Users"]) {
@@ -454,12 +521,15 @@ function initMap() {
                                         map: map,
                                         position: latLng,
                                         title: eventName,
+                                        icon: 'Google_Maps_Markers/orange_MarkerY.png'
+                                        /*
                                         icon: {
                                             path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                                             scale: 5,
                                             fillColor: 'green',
                                             fillOpacity: 1
                                         }
+                                        */
                                     });
                                     
                                     userAddress = userMarker;
@@ -492,12 +562,15 @@ function initMap() {
                                 map: map,
                                 position: latLng,
                                 title: eventName,
+                                icon: 'Google_Maps_Markers/blue_MarkerH.png'
+                                /*
                                 icon: {
                                     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                                     scale: 5,
                                     fillColor: 'gold',
                                     fillOpacity: 1
                                 }
+                                */
                             });
                             
                             hackathonLoc = marker;
@@ -573,7 +646,7 @@ function initMap() {
                 geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         return results[0].geometry.location;
-                        console.log(address);
+                       
                     } else {
                         alert("Geocode was not successful for the following reason: " + status);
                     }
@@ -598,7 +671,7 @@ function initMap() {
          ref.once("value", function(snapshot) {
              var obj = snapshot.val();
          for(var i in obj["Events"]) {
-            // console.log(obj["Events"][i]["Address"] + " - " + obj["Events"][i]["Lat"] + " - " + obj["Events"][i]["Lng"]);
+            
              if((obj["Events"][i]["Lat"]) != undefined && (obj["Events"][i]["Lng"]) != undefined) {
                  var date = {
                      year: obj["Events"][i]["Year"],
