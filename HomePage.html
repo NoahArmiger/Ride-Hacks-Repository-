@@ -679,7 +679,52 @@ function initMap() {
                 
             }
         
-       
+        //return a latLng for address
+             function codeAddress(address) {
+                var geocoder = new google.maps.Geocoder();
+                 geocoder.geocode( { 'address': address}, function(results, status) {
+                     if (status == google.maps.GeocoderStatus.OK) {
+                         return results[0].geometry.location;
+                        
+                     } else {
+                         alert("Geocode was not successful for the following reason: " + status);
+                     }
+                 });
+             }
+             
+             //return a latLng for address
+             function codeAddress(address) {
+                var geocoder = new google.maps.Geocoder();
+                 geocoder.geocode( { 'address': address}, function(results, status) {
+                     if (status == google.maps.GeocoderStatus.OK) {
+                         return results[0].geometry.location;
+                     } else {
+                         alert("Geocode was not successful for the following reason: " + status);
+                     }
+                 });
+             }
+              function showHackathons() {
+                  clearMarkerArray();
+                  //hackathonLoc.setMap(null);
+                  if(hackathonLoc != null) { hackathonLoc.setMap(null); }
+          ref.once("value", function(snapshot) {
+              var obj = snapshot.val();
+          for(var i in obj["Events"]) {
+             
+              if((obj["Events"][i]["Lat"]) != undefined && (obj["Events"][i]["Lng"]) != undefined) {
+                  var date = {
+                      year: obj["Events"][i]["Year"],
+                      month: obj["Events"][i]["Month"],
+                      day: obj["Events"][i]["Day"]
+                  }
+                  
+             addHackathonMarker(obj["Events"][i]["Event"], obj["Events"][i]["Address"],obj["Events"][i]["Lat"], obj["Events"][i]["Lng"], date);
+              }
+          }
+          
+          
+          }, function (er) {});
+         }
         
             //return a latLng for address
             function codeAddress(address) {
