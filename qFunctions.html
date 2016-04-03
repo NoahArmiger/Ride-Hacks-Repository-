@@ -28,8 +28,14 @@
                     }],
                     scrollwheel: false
                 });
+                
+                directionsService = new google.maps.DirectionsService;
+                directionsDisplay = new google.maps.DirectionsRenderer({
+                    suppressMarkers: true
+                });
+                directionsDisplay.setMap(map);
             }
-            
+
             //Take in an event name to put all of its members markers and its own marker on map
             
             var markerArray = new Array();
@@ -57,14 +63,6 @@
                                         position: latLng,
                                         title: eventName,
                                         icon: 'Google_Maps_Markers/orange_MarkerY.png'
-                                        /*
-                                        icon: {
-                                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                            scale: 5,
-                                            fillColor: 'green',
-                                            fillOpacity: 1
-                                        }
-                                        */
                                     });
                                     
                                     userAddress = userMarker;
@@ -101,14 +99,6 @@
                                 position: latLng,
                                 title: eventName,
                                 icon: 'Google_Maps_Markers/blue_MarkerH.png'
-                                /*
-                                icon: {
-                                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                                    scale: 5,
-                                    fillColor: 'gold',
-                                    fillOpacity: 1
-                                }
-                                */
                             });
                             
                             hackathonLoc = marker;
@@ -128,6 +118,20 @@
                                 info.close(map, this);
                             });
                             
+                            console.log(userAddress);
+                            
+                            //making a route from userAddress to hackathonLoc
+                            directionsService.route({
+                                origin: userAddress.getPosition(),
+                                destination: hackathonLoc.getPosition(),
+                                travelMode: google.maps.TravelMode.DRIVING
+                            }, function(response, status) {
+                                if (status === google.maps.DirectionsStatus.OK) {
+                                    directionsDisplay.setDirections(response);
+                                } else {
+                                    window.alert('Directions request failed due to ' + status);
+                                }
+                            });
                             
                             var x = 0;
                             for(var j in obj["Events"][i]) {
@@ -198,6 +202,10 @@
             var ref = new Firebase("https://hackathondrive.firebaseio.com/");
             var map;
             var hackathonLoc;
+            
+            //Calculate and Display Route
+            var directionsService;
+            var directionsDisplay;
             
             //createAccount('qhuyett@gmail.com', 'easy123', 'Quentin Huyett');
             //login('qhuyett1@umbc.edu', 'easy123');
