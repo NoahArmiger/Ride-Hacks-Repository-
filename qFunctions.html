@@ -70,6 +70,8 @@
                                     hasUserAddress = true;
                                     if(obj["Users"][i]["Events"][j]["Driving"] == "Offering to Drive") {
                                         userIsDriving = true;
+                                    } else {
+                                        userIsDriving = false;
                                     }
                                     
                                     var userContentString = '<div class = "w3-container w3-padding w3-center">' +
