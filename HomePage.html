@@ -264,10 +264,17 @@
                 
                     if(addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), hackDate, pos) == false) 
                         {
-                            
-                            dont = true;
+                        
+                           
                         }
-                    else{  }
+                    else{   ////////////////////////////
+            
+            
+            clearMarkerArray();
+            displayMapOfEvent(hackathonLocEvent);
+            generateTable();
+            console.log(hackathonLocEvent);
+                            dont = true; }
                     break;
                 }
             }
@@ -275,13 +282,7 @@
          
         if(!dont){
           
-        document.getElementById("er").style.visibility = "visible";
-        document.getElementById("er").class += "alert alert-success"
-        document.getElementById("er").innerHTML = "<strong>Event added! Click again to show on map. </strong>";
-            clearMarkerArray();
-            displayMapOfEvent(hackathonLocEvent);
-            generateTable();
-            console.log(hackathonLocEvent);
+       
             //setTimeout(            displayMapOfEvent(hackathonLocEvent), 1000);
          
         }
@@ -314,8 +315,8 @@ function selectButton(btn) {
         var mrk;
 function initMap() {
     ref = new Firebase("https://hackathondrive.firebaseio.com/")
-    uid = ref.getAuth().uid;
-    //uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
+    //uid = ref.getAuth().uid;
+    uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
     geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.887, lng: -96.437},
@@ -421,6 +422,9 @@ function initMap() {
                                 return false;
                             }
                         }
+                    document.getElementById("er").style.visibility = "visible";
+        document.getElementById("er").class += "alert alert-success"
+        document.getElementById("er").innerHTML = "<strong>Event added! Click again to show on map. </strong>";
                 if(obj["Events"][i]["Event"] == event) {
                     
                     ref.child("Events").child(i).push({Day: date.day, Month: date.month, Year: date.year, Address: address, Driving: desc, Email: email, Name: name, lat: posit.lat(), lng: posit.lng()});
@@ -518,8 +522,8 @@ function initMap() {
             
            function displayMapOfEvent(eventName) {
                document.getElementById('er').innerHTML = '';
-                var uid = ref.getAuth().uid;
-                //var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
+                //var uid = ref.getAuth().uid;
+                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
                 hasUserAddress = false;
                 ref.once("value", function(snap) {
                     var obj = snap.val();
@@ -742,4 +746,4 @@ function initMap() {
         
     </script>
 </body> 
-</html> 
+</html>
