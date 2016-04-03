@@ -121,17 +121,19 @@
                             });
                             
                             //making a route from userAddress to hackathonLoc
-                            directionsService.route({
-                                origin: userAddress.getPosition(),
-                                destination: hackathonLoc.getPosition(),
-                                travelMode: google.maps.TravelMode.DRIVING
-                            }, function(response, status) {
-                                if (status === google.maps.DirectionsStatus.OK) {
-                                    directionsDisplay.setDirections(response);
-                                } else {
-                                    window.alert('Directions request failed due to ' + status);
-                                }
-                            });
+                            if(hasUserAddress) {
+                                directionsService.route({
+                                    origin: userAddress.getPosition(),
+                                    destination: hackathonLoc.getPosition(),
+                                    travelMode: google.maps.TravelMode.DRIVING
+                                }, function(response, status) {
+                                    if (status === google.maps.DirectionsStatus.OK) {
+                                        directionsDisplay.setDirections(response);
+                                    } else {
+                                        window.alert('Directions request failed due to ' + status);
+                                    }
+                                });
+                            }
                             
                             var x = 0;
                             for(var j in obj["Events"][i]) {
