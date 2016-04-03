@@ -39,7 +39,7 @@
             
             function displayMapOfEvent(eventName) {
                 //var uid = ref.getAuth().uid;
-                var uid = "501f70d2-2358-4c06-85e8-8927c42baffb";
+                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
 
                 ref.once("value", function(snap) {
                     var obj = snap.val();
@@ -112,11 +112,10 @@
                                 '<p>' + obj["Events"][i]["Address"] + '</p>' + '<p>' + obj["Events"][i]["Month"] + ' ' + obj["Events"][i]["Day"] + ', ' + obj["Events"][i]["Year"] + '</p>' +
                                 '</div>';
 
-                            var info = new google.maps.InfoWindow({
-                                content: contentString
-                            });
+                            var info = new google.maps.InfoWindow();
 
                             marker.addListener('mouseover', function() {
+                                info.setContent(contentString);
                                 info.open(map, this);
                             });
                             marker.addListener('mouseout', function() {
