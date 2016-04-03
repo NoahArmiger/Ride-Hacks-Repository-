@@ -250,8 +250,8 @@ function initMap() {
     var autocomplete = new google.maps.places.Autocomplete(input);
     autocomplete.bindTo('bounds', map);
     document.getElementById("pac-input").style.visibility = "visible";           
-    autocomplete.addListener('place_changed', function() {infowindow.close();});
-    var infowindow = new google.maps.InfoWindow();
+    //autocomplete.addListener('place_changed', function() {infowindow.close();});
+    //var infowindow = new google.maps.InfoWindow();
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);  
     autocomplete.bindTo('bounds', map);
@@ -281,8 +281,8 @@ function initMap() {
               (place.address_components[2] && place.address_components[2].short_name || '')
             ].join(' ');
           }
-                     infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-          infowindow.open(map, this); 
+                     //infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+          //infowindow.open(map, this); 
             });
          
           markerToAdd = marker;
