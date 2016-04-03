@@ -230,7 +230,7 @@
         var directionsService;
         var directionsDisplay;
         var hasUserAddress;
-            
+
         var email;
         var userAddress;
         var selectedHackathon = false;
@@ -262,20 +262,26 @@
                 if(obj["Users"][i]["UserID"] == uid) {
                     name = obj["Users"][i]["Name"];
                     email = obj["Users"][i]["EmailAddress"];
+                
                     if(addDriveLocation(hackathonLocEvent, document.getElementById("pac-input").value, obj["Users"][i]["Name"],obj["Users"][i]["EmailAddress"], document.getElementById(selectedBTN).innerHTML.trim(), hackDate, pos) == false) 
                         {
                             dont = true;
                         }
+                    else{  if(mrk != null) {mrk.setMap(null)};}
                     break;
                 }
             }
         });
-        
+         
         if(!dont){
+          
         document.getElementById("er").style.visibility = "visible";
         document.getElementById("er").class += "alert alert-success"
         document.getElementById("er").innerHTML = "<strong>Event added! </strong>";
+         
         }
+        //clearMarkerArray();
+          // displayMapOfEvent(hackathonLocEvent);
     }
 }
 function selectButton(btn) {
@@ -301,10 +307,11 @@ function selectButton(btn) {
     }
 
 }
+        var mrk;
 function initMap() {
     ref = new Firebase("https://hackathondrive.firebaseio.com/")
-    uid = ref.getAuth().uid;
-    //uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
+    //uid = ref.getAuth().uid;
+    uid = "0ba45088-159a-4de0-a65f-eea581bda61f";      
     geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.887, lng: -96.437},
@@ -360,7 +367,7 @@ function initMap() {
                suppressMarkers: true
           });
           directionsDisplay.setMap(map);
-}   
+}     
         function addHackathonMarker(event, address, lat, lng, date) {
 
                 var marker = new google.maps.Marker({position: {lat: lat, lng: lng}, map: map });
@@ -513,8 +520,8 @@ function initMap() {
         
             
           function displayMapOfEvent(eventName) {
-                var uid = ref.getAuth().uid;
-                //var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
+                //var uid = ref.getAuth().uid;
+                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
                 
                 hasUserAddress = false;
                 
