@@ -303,8 +303,11 @@ function initMap() {
             mIndex = 0; markers = {};
             });
             marker.addListener('mouseover', function(){
-                
-             infowindow.setContent(event + "<br>" + address + "<br>" + date.month + " " + date.day + ", " + date.year);
+                var stringContent = '<div class = "w3-container w3-padding w3-center">' +
+                                '<h2>' + event + '</h2>' +
+                                '<p>' + address + '</p>' + '<p>' + date.month + ' ' + date.day + ', ' + date.year + '</p>' +
+                                '</div>'; 
+             infowindow.setContent(stringContent);
                 infowindow.open(map, this);
                
             });
