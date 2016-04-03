@@ -67,7 +67,9 @@
                                     });
                                     
                                     userAddress = userMarker;
-                                    hasUserAddress = true;
+                                    if(obj["Users"][i]["Events"][j]["Driving"] == "Offering to Drive") {
+                                        hasUserAddress = true;
+                                    }
                                     
                                     var userContentString = '<div class = "w3-container w3-padding w3-center">' +
                                         '<p>' + 'You' + '</p>' +
