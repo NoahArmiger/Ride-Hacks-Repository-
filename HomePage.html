@@ -249,30 +249,25 @@ function initMap() {
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
     var autocomplete = new google.maps.places.Autocomplete(input);
     autocomplete.bindTo('bounds', map);
-    document.getElementById("pac-input").style.visibility = "visible";
-               
-                        //autocomplete.addListener('place_changed', function() {
-          //infowindow.close();
-               
+    document.getElementById("pac-input").style.visibility = "visible";           
+    autocomplete.addListener('place_changed', function() {infowindow.close();});
     var infowindow = new google.maps.InfoWindow();
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);  
     autocomplete.bindTo('bounds', map);
-    
     var pinColor = "00FF00";
     var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
         new google.maps.Size(71, 71),
         new google.maps.Point(0,0),
         new google.maps.Point(17, 34));
-        
-                var marker = new google.maps.Marker({
-                    map: map,
-                    anchorPoint: new google.maps.Point(0, -29),
-                    icon: pinImage
-                });
-                autocomplete.addListener('place_changed', function() {
-          marker.setVisible(false);
-          var place = autocomplete.getPlace();
+        var marker = new google.maps.Marker({
+            map: map,
+            anchorPoint: new google.maps.Point(0, -29),
+            icon: pinImage
+            });
+        autocomplete.addListener('place_changed', function() {
+        marker.setVisible(false);
+        var place = autocomplete.getPlace();
           
           marker.setPosition(place.geometry.location);
           pos = place.geometry.location;
@@ -287,7 +282,7 @@ function initMap() {
             ].join(' ');
           }
                      infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-          infowindow.open(map, marker); 
+          infowindow.open(map, this); 
             });
          
           markerToAdd = marker;
@@ -440,7 +435,7 @@ function initMap() {
             
             function displayMapOfEvent(eventName) {
                 //var uid = ref.getAuth().uid;
-                var uid = "0ba45088-159a-4de0-a65f-eea581bda61f";
+                var uid = "501f70d2-2358-4c06-85e8-8927c42baffb";
                 ref.once("value", function(snap) {
                     var obj = snap.val();
                     for(var i in obj["Users"]) {
@@ -523,10 +518,18 @@ function initMap() {
                                 if(address != null && obj["Events"][i][j]["Email"] != email) {
                                     var latLng1 = new google.maps.LatLng(obj["Events"][i][j]["lat"], obj["Events"][i][j]["lng"]);
                                     
+                                    var image;
+                                    if(obj["Events"][i][j]["Driving"] == "Offering to Drive") {
+                                        image = 'Google_Maps_Markers/red_MarkerD.png';
+                                    } else {
+                                        image = 'Google_Maps_Markers/yellow_MarkerL.png';
+                                    }
+                                    
                                     var marker1 = new google.maps.Marker({
                                         map: map,
                                         position: latLng1,
                                         title: obj["Events"][i][j]["Name"],
+                                        icon: image
                                     });
                                     
                                     markerArray[x] = marker1;
