@@ -3,8 +3,8 @@ This is the source for rideHacks
 
 Made By :
 
-Noah Armiger 
-Joe Bearnstein
+Noah Armiger, 
+Joe Bearnstein,
 Quenton Huyett
 
 
